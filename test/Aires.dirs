@@ -1,9 +1,0 @@
-# This is the AIRES dirs file. DO NOT EDIT.
-Aires_DHost='austin-ThinkPad-P1-Gen-5'
-Aires_DUserName='austin'
-Aires_DTaskName='test'
-Aires_DRandomfn='__Aires1001_9101'
-Aires_DOutput='/home/austin/Practical_and_Accurate/test/'
-Aires_DGlobal='/home/austin/Practical_and_Accurate/test/'
-Aires_DExport='/home/austin/Practical_and_Accurate/test/'
-Aires_DScratch=
