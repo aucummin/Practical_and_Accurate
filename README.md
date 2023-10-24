@@ -6,10 +6,10 @@ The Practical and Accurate (P&A) approach to calculating radio emission from air
 
 The bulk of the methodology is found in /src/aires/Cpp_GridMaker_2.cpp. Tracks are generated in src/aires/eplusmins.f and passed to the C++ script using the "update_vector" function (using iso c binding), where they are histogrammed into non-uniform 4D bins in spacetime. In src/aires/Aires.f, after all the generated tracks have been passed, the function "calculate_radio" is called, which calculates the electric fields from the summed currents. The final text file containing the calculated electric fields is saved in the directory where the shower is generated and can be compared directly to the "timefresnel-root.dat" file if radio calculations are toggled on during runtime.
 
-# Prerequisites
-1) For running ZHAireS: I don't think any? If I'm wrong on this, update this section!
-2) For plotting: numpy, matplotlib, scipy
-3)For easy steering (recommended): [Remy Prechelt's zhaires.py python wrapper for ZHAireS](https://github.com/rprechelt/zhaires.py)
+# Prerequisites:
+* For running ZHAireS: I don't think any? If I'm wrong on this, update this section!  
+* For plotting: numpy, matplotlib, scipy  
+* For easy steering (recommended): [Remy Prechelt's zhaires.py python wrapper for ZHAireS](https://github.com/rprechelt/zhaires.py)
 
 # Building P&A ZHAireS:
 1) Compile the src/aires/grid.f90 linking script: "gfortran -c grid.f90"
