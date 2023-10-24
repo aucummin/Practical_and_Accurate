@@ -17,4 +17,4 @@ The bulk of the methodology is found in /src/aires/Cpp_GridMaker_2.cpp. Tracks a
 3) Perform the ZHAireS install: "./doinstall 0" or follow the ZHAireS "Install.HowTo" document
 
 # How to use P&A ZHAireS:
-Exactly the same as ZHAireS (for now). Either use a steering file or the zhaires.py python wrapper. An example using the latter is given in "example_runfile.py"
+Exactly the same as ZHAireS (for now). Either use a steering file or the zhaires.py python wrapper. An example using the latter is given in "example_runfile.py". Should you use this runfile, ensure that the absolute pathing to the Aires installation is correct for your system.
