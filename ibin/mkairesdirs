@@ -1,0 +1,468 @@
+#!/bin/sh
+#
+# -----------
+# mkairesdirs
+# -----------
+#
+# AIRES installing system internal script.
+# (Creating directories and related stuff).
+#
+# Written by S. J. Sciutto, La Plata 1997; Fermilab 1999.
+#
+# Last modification: 26/Apr/1999.
+#
+# Usage:
+#
+#   mkairesdirs config_file install_level
+#
+# DO NOT MODIFY THIS SCRIPT!
+#
+###############################################################################
+#
+config=$1
+instlevel=$2
+. ./cfg.tmp
+#
+# Creating/checking main directories.
+#
+if [ $instlevel -le 1 ]
+then
+#
+  echo ">>> Creating directories."
+#
+  for ddir in $airesroot $airesrootver; do
+    if [ -f $ddir ]
+    then
+      mv -f $ddir ${ddir}.bck
+      mkdir -p $ddir
+    else
+      if [ ! -d $ddir ]
+      then
+        mkdir -p $ddir
+      fi
+    fi
+    if [ ! -d $ddir ]
+    then
+      echo Cannot create AIRES root directory \($ddir\).
+      echo Installation aborted.
+      rm -f $iroot/cfg.tmp
+      exit
+    fi
+  done
+#
+# Checking if the installation and AIRES root directories are the same
+# directory.
+#
+  rm -f $airesroot/OnlyToCheck.TMP
+  rm -f $airesrootver/OnlyToCheck.TMP
+  rm -f $iroot/OnlyToCheck.TMP
+  echo "Hello." > $iroot/OnlyToCheck.TMP
+  if [ -f $airesroot/OnlyToCheck.TMP ]
+  then
+    sameroots=2
+  elif [ -f $airesrootver/OnlyToCheck.TMP ]
+  then
+    sameroots=1
+  else
+    sameroots=0
+  fi
+  echo "sameroots=\"$sameroots\"" >> $iroot/cfg.tmp
+  rm -f $iroot/OnlyToCheck.TMP
+#
+# Checking if there is a previous installation of AIRES.
+#
+  ovmdir=
+  ovvdir=
+  ovbdir=
+  oldaires=0
+  cd $airesroot
+  if [ -h current ]
+  then
+    set `ls -ld current`
+    for item in $*; do
+       case $item in
+         /*) ovmdir=
+         ;;
+         ..*) ovmdir=
+         ;;
+         ?*-?*-?*) ovmdir="$airesroot"
+                   ovvdir="$item"
+         ;;
+       esac
+    done
+    if [ "_$ovvdir" != "_" ]
+    then
+      if [ -d $ovvdir ]
+      then
+        if [ -d ${airesroot}/${ovvdir}/bin ]
+        then
+          ovbdir="${airesroot}/${ovvdir}/bin"
+          oldaires=3
+        fi
+      else
+        ovmdir=
+        ovvdir=
+      fi
+    fi
+  else
+    set `$iroot/ibin/airesdirsaux`
+    ovmdir="$2"
+    ovbdir="$3"
+    if [ "_$ovmdir" != "_" ]
+    then
+      if [ -d $ovmdir ]
+      then
+        cd $ovmdir
+        if [ -h current ]
+        then
+          set `ls -ld current`
+          for item in $*; do
+            case $item in
+              /*) ovmdir=
+              ;;
+              ..*) ovmdir=
+              ;;
+              ?*-?*-?*) ovvdir="$item"
+              ;;
+            esac
+          done
+          if [ "_$ovbdir" != "_" ]
+          then
+            if [ -d $ovbdir ]
+            then
+              if [ "_$ovvdir" != "_" ]
+              then
+                if [ -d $ovvdir ]
+                then
+                  oldaires=2
+                else
+                  ovvdir=
+                fi
+              fi
+            else
+              ovbdir=
+              if [ "_$ovvdir" != "_" ]
+              then
+                if [ -d $ovvdir ]
+                then
+                  oldaires=1
+                  if [ -d ${airesroot}/${ovvdir}/bin ]
+                  then
+                    ovbdir="${airesroot}/${ovvdir}/bin"
+                  fi
+                else
+                  ovmdir=
+                  ovvdir=
+                fi
+              fi
+            fi
+          fi
+        else
+          ovmdir=
+          ovvdir=
+        fi
+      else
+        ovmdir=
+      fi
+    fi
+    if [ "_$ovbdir" != "_" ]
+    then
+      if [ ! -d $ovbdir ]
+      then
+        ovbdir=
+      fi
+    fi
+  fi
+#
+  if [ "_$ovvdir" = "_1-2-0" ]
+  then
+    oldvr1=1
+    oldvr2=2
+    oldvr3=0
+    oversion="1.2.0"
+  else
+    if [ -x ${ovbdir}/AiresVersion ]
+    then
+      set `${ovbdir}/AiresVersion -b`
+      oldvr1=$1
+      oldvr2=$2
+      oldvr3=$3
+      ovvdir0="${1}-${2}-${3}"
+      case $ovvdir0 in
+        ?*-?*-?*) ovvdir="$ovvdir0"
+        ;;
+        *)        if [ "_$ovvdir" != "_" ]
+                  then
+                    set `echo $ovvdir | tr - ' '`
+                    oldvr1=$1
+                    oldvr2=$2
+                    oldvr3=$3
+                    ovvdir0="$ovvdir"
+                  fi
+        ;;
+      esac
+      oversion="${1}.${2}.${3}"
+      if [ "_$ovvdir" = "_$ovvdir0" ]
+      then
+        ovvdir="$ovvdir0"
+        oversion="${1}.${2}.${3}"
+      else
+        ovvdir=
+        oversion=
+      fi
+    else
+      oldvr1=
+      oldvr2=
+      oldvr3=
+      ovvdir=
+      oversion=
+    fi
+  fi
+  echo "oldaires=$oldaires" >> $iroot/cfg.tmp
+  echo "oldvr1=$oldvr1" >> $iroot/cfg.tmp
+  echo "oldvr2=$oldvr2" >> $iroot/cfg.tmp
+  echo "oldvr3=$oldvr3" >> $iroot/cfg.tmp
+  echo "oldversion=$ovvdir" >> $iroot/cfg.tmp
+  echo "oldversionp=$oversion" >> $iroot/cfg.tmp
+  echo "oldroot=\"${ovmdir}\"" >> $iroot/cfg.tmp
+  echo "oldbindir=\"${ovbdir}\"" >> $iroot/cfg.tmp
+#
+#
+# Bin and lib directories
+#
+  cd $airesroot
+#
+  if [ -f $bindir0 ]
+  then
+    mv -f $bindir0 ${bindir0}.bck
+    mkdir -p $bindir0
+  else
+    if [ ! -d $bindir0 ]
+    then
+      mkdir -p $bindir0
+    fi
+  fi
+  if [ ! -d $bindir0 ]
+  then
+    echo Cannot create AIRES bin directory \($bindir0\).
+    echo Installation aborted.
+    rm -f $iroot/cfg.tmp
+    exit
+  fi
+#
+  if [ $binlink -ne 1 ]
+  then
+    if [ -f bin ]
+    then
+      mv bin bin.bck
+    elif [ -h bin ]
+    then
+      rm -f bin
+    elif [ -d bin ]
+    then
+      mv bin bin.other
+    fi
+    ln -s current/bin bin
+  fi
+#
+  if [ -f $libdir0 ]
+  then
+    mv -f $libdir0 ${libdir0}.bck
+    mkdir -p $libdir0
+  else
+    if [ ! -d $libdir0 ]
+    then
+      mkdir -p $libdir0
+    fi
+  fi
+  if [ ! -d $libdir0 ]
+  then
+    echo Cannot create AIRES lib directory \($libdir0\).
+    echo Installation aborted.
+    rm -f $iroot/cfg.tmp
+    exit
+  fi
+#
+  if [ $liblink -ne 1 ]
+  then
+    if [ -f lib ]
+    then
+      mv lib lib.bck
+    elif [ -h lib ]
+    then
+      rm -f lib
+    elif [ -d lib ]
+    then
+      mv lib lib.other
+    fi
+    ln -s current/lib lib
+  fi
+#
+# cfg directory.
+#
+  if [ -f $iroot/dld ]
+  then
+    cd $iroot
+  else
+    cd $airesrootver
+  fi
+  cfgdir0="`pwd`"
+#
+  if [ -f cfg ]
+  then
+    mv -f cfg cfg.bck
+    mkdir cfg
+  else
+    if [ ! -d cfg ]
+    then
+      mkdir cfg
+    fi
+  fi
+  if [ ! -d cfg ]
+  then
+    echo Cannot create AIRES cfg directory \(${cfgdir0}/cfg\).
+    echo Installation aborted.
+    rm -f $iroot/cfg.tmp
+    exit
+  fi
+  cfgdir0="${cfgdir0}/cfg"
+  echo "cfgdir0=\"${cfgdir0}\"" >> $iroot/cfg.tmp
+#
+  if [ $instlevel = 0 ]
+  then
+#
+#   Level 0 installation, all other directories must be created.
+#
+    cd $airesroot
+    for ddir in spool log; do
+      if [ -f $ddir ]
+      then
+        mv -f $ddir ${ddir}.bck
+      elif [ -h $ddir ]
+      then
+        rm -f $ddir
+      fi
+      if [ ! -d $ddir ]
+      then
+        mkdir $ddir
+      fi
+      if [ ! -d $ddir ]
+      then
+        echo Cannot create ${airesroot}/$ddir directory.
+        echo Installation aborted.
+        rm -f $iroot/cfg.tmp
+        exit
+      fi
+    done
+    cd spool
+    for ddir in 1 2 3 4 5 6 7 8 9; do
+      if [ -f $ddir ]
+      then
+        mv -f $ddir ${ddir}.bck
+      elif [ -h $ddir ]
+      then
+        rm -f $ddir
+      fi
+      if [ ! -d $ddir ]
+      then
+        mkdir $ddir
+      fi
+      if [ ! -d $ddir ]
+      then
+        echo Cannot create ${airesroot}/spool/$ddir directory.
+        echo Installation aborted.
+        rm -f $iroot/cfg.tmp
+        exit
+      fi
+    done
+#
+#   Loading some basic files.
+#
+    cd $airesroot
+    tar -xf $iroot/data/spolog.tar
+#
+  fi
+#
+# Loading other files that may be version-dependent
+#
+  cd $airesrootver
+  for ddir in doc demos; do
+    if [ -f $ddir ]
+    then
+      mv -f $ddir ${ddir}.bck
+    elif [ -h $ddir ]
+    then
+      rm -f $ddir
+    fi
+    if [ ! -d $ddir ]
+    then
+      mkdir $ddir
+    fi
+    if [ ! -d $ddir ]
+    then
+      echo Cannot create ${airesrootver}/$ddir directory.
+      echo Installation aborted.
+      rm -f $iroot/cfg.tmp
+      exit
+    fi
+    if [ $sameroots -ne 1 ]
+    then
+      cp $iroot/${ddir}/* $ddir
+    fi
+  done
+#
+  cd $bindir0
+  if [ -f airesrc -o -h airesrc ]
+  then
+    rm -f airesrc.bck
+    mv airesrc airesrc.bck
+  fi
+  echo "#" > airesrc
+  echo \
+    "# Standard .airesrc file for AIRES version $versionp" \
+    >> airesrc
+  echo "#" >> airesrc
+  cat $iroot/skel/airesrc.$airesrc >> airesrc
+#
+  if [ $sameroots -eq 1 ]
+  then
+    cd $iroot/skel
+    rm -f airesrc
+    ln -s airesrc.$airesrc airesrc
+  fi
+#
+  cd $iroot
+fi
+#
+# Checking the existence of root and bin directories as an additional
+# control.
+#
+if [ $instlevel -le 1 ]
+then
+  for ddir in $airesroot $airesrootver; do
+    if [ ! -d $ddir ]
+    then
+      echo Directory $ddir does not exist.
+      echo Installation aborted.
+      rm -f $iroot/cfg.tmp
+      exit
+    fi
+  done
+fi
+for ddir in $bindir0 $libdir0 $cfgdir0; do
+  if [ ! -d $ddir ]
+  then
+    echo Directory $ddir does not exist.
+    echo Installation aborted.
+    rm -f $iroot/cfg.tmp
+    exit
+  fi
+done
+if [ $instlevel -le 1 ]
+then
+  echo '    Done.'
+fi
+exit
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

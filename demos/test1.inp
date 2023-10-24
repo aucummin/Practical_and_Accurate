@@ -1,0 +1,63 @@
+#
+# File test1.inp: Generating ten 5x10^17 eV iron showers.
+#
+#------------------------------------------------------------------------------
+
+Task test1
+
+Rem SAMPLE IRON SHOWERS.
+Rem
+Rem &wng1
+************************************************************
+NOTE: This example is for demonstration purposes only.
+----  The parameters used for the simulations may not be
+appropriate for scientific analysis.
+************************************************************
+&wng1
+
+# Main shower parameters.
+
+TotalShowers      10
+
+PrimaryParticle   Iron
+PrimaryEnergy     5.0e17 eV
+
+PrimaryZenAngle   0 deg
+PrimaryAzimAngle  0 deg
+
+# Other parameters.
+
+RandomSeed 0.32836254
+
+Thinning        1.0E-4 Relative
+ThinningWF      25
+Injection       100 km
+Ground          900 g/cm2
+ObservingLevels 21 50 g/cm2 850 g/cm2
+
+# Threshold energies.
+
+GammaCutEnergy     200 keV
+ElectronCutEnergy  200 keV
+MuonCutEnergy        1 MeV
+MesonCutEnergy     1.5 MeV
+NuclCutEnergy      125 MeV
+
+#
+# Some model-dependent parameters.
+#
+MFPHadronic   Standard
+ExtCollModel  Off
+#
+# These instructions are for selecting the output data to be printed
+# (or exported).
+#
+PrintTable 1291
+PrintTable 7905
+PrintTable 1493
+PrintTable 1707
+PrintTable 2207 Opt d
+PrintTable 3001 Opt M
+#
+End
+#

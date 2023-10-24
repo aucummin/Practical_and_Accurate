@@ -1,0 +1,30 @@
+#
+# To emulate an "IF" statement within a set of IDL directives.
+#
+
+. . .
+
+SetGlobal x1 315
+SetGlobal x2 216
+
+SetGlobal tf Conditional {x1} GE {x2}
+Skip &&{tf}
+
+&True :
+
+Echo The clause {x1} GE {x2} is TRUE.
+
+# Place here the "True case " directives.
+
+Skip &EndIf :
+&False :
+
+Echo The clause {x1} GE {x2} is FALSE.
+
+# Place here the "False case" directives.
+
+&EndIf :
+
+# Input scanning continues normally after processing the "IF" construct.
+
+...

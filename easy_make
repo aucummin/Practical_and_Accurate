@@ -1,0 +1,6 @@
+#!/bin/bash
+cd src/aires/
+g++ -c -O3 Cpp_GridMaker_2.cpp
+cd ../..
+./doinstall 0
+cd ../..

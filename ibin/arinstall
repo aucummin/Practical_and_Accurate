@@ -1,0 +1,123 @@
+#!/bin/sh
+#
+# ---------
+# arinstall
+# ---------
+#
+# AIRES installing system internal script.
+# (Downloading the Aires Runner System and making soft links).
+#
+# Written by S. J. Sciutto, La Plata 1997.
+#
+# Last modification: 14/Oct/1997.
+#
+# Usage:
+#
+#   arinstall config_file install_level
+#
+# DO NOT MODIFY THIS SCRIPT!
+#
+###############################################################################
+#
+config=$1
+instlevel=$2
+. ./cfg.tmp
+#
+if [ $instlevel -le 1 ]
+then
+#
+#   Loading Aires Runner shell scripts.
+#
+    echo
+    echo ">>> Installing the Aires Runner System."
+#
+    cd $bindir0
+    if [ -f $iroot/data/AiresRunner.ln ]
+    then
+      rm -f `cat $iroot/data/AiresRunner.ln`
+    fi
+    tar -xf $iroot/data/AiresRunner.tar
+#
+#   Creating version script.
+#
+    rm -f AiresVersion
+    echo '#!/bin/sh' > AiresVersion
+    echo '#' >> AiresVersion
+    echo '# AiresVersion' >> AiresVersion
+    echo '#' >> AiresVersion
+    echo '# Printing current AIRES version' >> AiresVersion
+    echo '#' >> AiresVersion
+    echo '# Script created automatically by the installing procedure.' \
+         >> AiresVersion
+    echo '# DO NOT EDIT!' >> AiresVersion
+    echo '#' >> AiresVersion
+    echo '###########################################################' \
+         >> AiresVersion
+    echo '#' >> AiresVersion
+    echo 'if [ "_$1" = "_-b" ]' >> AiresVersion
+    echo 'then' >> AiresVersion
+    echo "  echo '$vr1 $vr2 $vr3'" >> AiresVersion
+    echo 'else' >> AiresVersion
+    echo "  echo '$versionp'" >> AiresVersion
+    echo 'fi' >> AiresVersion
+    echo 'exit' >> AiresVersion
+    echo '#' >> AiresVersion
+    echo '###########################################################' \
+         >> AiresVersion
+    echo '###########################################################' \
+         >> AiresVersion
+#
+    chmod +x AiresVersion
+    rm -f airesversion
+    ln -s AiresVersion airesversion
+#
+#   Making logical links for executable binaries.
+#
+    if [ $binlink = 2 ]
+    then
+      cd $bindir1
+      allfiles="`ls`"
+      cd $bindir2
+      for file in $allfiles; do
+        if [ -f $file ]
+        then
+          if [ -h $file ]
+          then
+            rm -f $file
+          else
+            mv $file $file.bck
+          fi
+        fi
+        ln -s $bindir1/$file .
+      done
+    fi
+#
+#   Making logical links for libraries.
+#
+    if [ $liblink = 2 ]
+    then
+      cd $libdir1
+      allfiles="`ls`"
+      cd $libdir2
+      for file in $allfiles; do
+        if [ -f $file ]
+        then
+          if [ -h $file ]
+          then
+            rm -f $file
+          else
+            mv $file $file.bck
+          fi
+        fi
+        ln -s $libdir1/$file .
+      done
+    fi
+#
+  echo "    Done."
+  cd $iroot
+#
+fi
+exit
+#
+###############################################################################
+###############################################################################

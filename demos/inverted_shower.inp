@@ -1,0 +1,91 @@
+#
+# File inverted_shower.inp: Generating a shower with an upwards-going
+#                           primary particle.
+#
+#------------------------------------------------------------------------------
+#
+# As you see, all characters following '#' are ignored, as well as blank lines.
+
+# Every AIRES input file is a set of directives. All directives must be placed
+# in a single line, which can have up to 176 characters.
+
+Remark    PRIMARY PARTICLE EMERGES FROM GROUND.
+
+# The directives can be placed in any order.
+# The input directives define a "task". Tasks are identified by their
+# task name and (eventually) version. If not defined, the version is zero.
+
+Task updemo1
+
+TotalShowers		1
+
+# The primary is defined by means of a "special primary" directive.
+# (see AIRES manual for details about special primaries).
+
+AddSpecialParticle      UProton  uprimary Proton
+AddSpecialParticle      UIron    uprimary Iron
+
+PrimaryParticle		UProton
+PrimaryEnergy		3 TeV
+
+# Zenith angle. In an inverted shower the zenith angle is the angle
+# of the emerging shower axis, equal to pi - primary_angle.
+# For example for a primary angle of 96 deg we have:
+
+PrimaryZenAngle  84 deg
+
+# You can freely set the number of observing levels to record the shower
+# longitudinal development. You can define up to 510 observing levels and
+# (optionally) altitude of the highest and lowest levels.
+
+ObservingLevels 401 100 g/cm2 900 g/cm2
+
+# Parameters of output files.
+#
+SaveInFile grdpcles All
+RLimsFile  grdpcles 10 m 10 km
+#
+SaveInFile lgtpcles None
+
+# All other parameters will be assigned a default value if not set.
+
+RunsPerProcess 3  # You will understand these directives when running
+ShowersPerRun  1  # the program (see the user's manual).
+
+Thinning   1e-4  Relative
+
+Ground     1000 g/cm2  # Most quantities are specified by two fields:
+                       # "number" and "unit". In this case "unit" can be
+                       # g/cm2, cm, m or km
+
+# Threshold energies. Particles are not followed below these energies.
+
+GammaCutEnergy     200 keV
+ElectronCutEnergy  200 keV
+MuonCutEnergy        1 MeV
+MesonCutEnergy     1.5 MeV
+NuclCutEnergy      150 MeV
+
+# These are some output control statements.
+
+SpecialParticLog 2  # Full special primary info. Use 0 to suppress info,
+                    # or 1 for brief info.
+
+LaTeX  # Use this if your printer is a laser printer and you don't like the
+       # appearance of plain text file hard copies.
+#
+# These instructions are for selecting the output data to be printed
+# (or exported). See the document "LearnByExamples.doc"
+#
+PrintTable 1291
+#
+ExportTable 2793 Opt ML
+ExportTable 5501
+ExportTable 7905
+#
+
+End
+
+The file is not scanned beyond an "End" directive.
+
+

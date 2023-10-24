@@ -1,0 +1,121 @@
+#
+# File specialprimdemo.inp: A first example on how to use the "special"
+#                           primary particles feature of AIRES (Since
+#                           version 2.2.0).
+#
+#------------------------------------------------------------------------------
+#
+# As you see, all characters following '#' are ignored, as well as blank lines.
+
+# Every AIRES input file is a set of directives. All directives must be placed
+# in a single line, which can have up to 176 characters.
+
+# This file is similar to "demo1.inp", but it uses the "special" primary
+# feature.
+
+Skip &next
+
+The directive "Skip" skips all text until the label &label is found. Notice
+that it is not equivalent to a "go to" statement since it is not possible to
+skip backwards.
+This statement is useful to introduce plain text in the input files (with no
+need of single line comment '#' characters), as well to skip a part of the
+directives without deleting the lines.
+
+&next
+
+
+# Remarks will appear in the summary file. The "Remark" directive can be
+# abbreviated and has two alternative forms:
+
+Remark    EXAMPLE WITH SPECIAL PRIMARIES     # 1.- Single-line remarks.
+
+Rem &eor                                     # 2.- Multi-line remarks.
+
+This is an example of an input file for AIRES.
+There are many things to learn here.
+&eor
+# You can place as many remarks as you want.
+
+# The directives can be placed in any order.
+# The input directives define a "task". Tasks are identified by their
+# task name and (eventually) version. If not defined, the version is zero.
+
+Task demospp  # Use "Task demospp 5" to explicitly set task version to 5.
+
+#
+# DEFINING A NEW "SPECIAL" PRIMARY PARTICLE.
+#
+
+AddSpecialParticle  manyhadrons  specialprim0
+
+# The first argument of the preceding directive is the name given to the
+# special particle being defined (up to 16 characters). The second field
+# is an executable module which will be invoked by the simulation program
+# at the beginning of every showers. This module must generate the
+# actual primary particle(s) to insert in the stacks before going on with
+# the propagation of the shower.
+
+# In this example "specialprim0" refers to the executable program generated
+# after compiling the file "specialprim0.f" (located inside this "demo"
+# directory). It is the user's responsibility to have this program correctly
+# compiled before processing this demo.
+
+# It is possible to define up to 10 special particles for a given task.
+
+# It is also possible to pass parameters to the executable progam,
+# placing them in the AddSpecialParticle directive after the
+# module's name. Additionally, it is possible to define global variables
+# that are readable from within the executable module. Such global variables
+# can be defined using the SetGlobal directive like in the following
+# examples (see the documentation for details):
+
+SetGlobal MYVAR1 String associated with this variable.
+SetGlobal Static MYVAR2  0.001567
+
+# The following directives are mandatory (have no default values)
+# Look that TAB characters can also be used in place of blanks.
+# The primary particle is a "special" one.
+
+TotalShowers		3
+PrimaryParticle		manyhadrons
+PrimaryEnergy		1 PeV
+
+# All other parameters will be assigned a default value if not set.
+
+RunsPerProcess 3  # You will understand these directives when running
+ShowersPerRun  1  # the program (see the user's manual).
+
+Thinning   1e-4 Rel # Relative as well as Absolute specifications allowed.
+
+Ground     1000 g/cm2  # Most quantities are specified by two fields:
+                       # "number" and "unit". In this case "unit" can be
+                       # g/cm2, cm, m or km
+#
+# You can freely set the number of observing levels to record the shower
+# longitudinal development. You can define up to 510 observing levels and
+# (optionally) altitude of the highest and lowest levels.
+
+ObservingLevels 41 100 g/cm2 900 g/cm2
+
+# Threshold energies. Particles are not followed below these energies.
+
+GammaCutEnergy     200 KeV
+ElectronCutEnergy  200 KeV
+MuonCutEnergy        1 MeV
+MesonCutEnergy     1.5 MeV
+NuclCutEnergy      150 MeV
+
+# The seed of the random number generator is set manually.
+
+RandomSeed         0.2560013287
+
+# IDL allows inclusion of other input files.
+
+Input demo1s.inp
+
+# The remaining directives are in file "demo1s.inp"
+
+End
+
+The file is not scanned beyond an "End" directive.

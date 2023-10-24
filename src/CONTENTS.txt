@@ -1,0 +1,54 @@
+
+
+    AIRES distribution src directory CONTENTS.txt file.
+
+The src directory is the upper level directory containing all the sources
+of the AIRES programs and libraries.
+
+The directories within src are:
+
+    src/aires            Main programs and subroutines that make the main body
+                         of AIRES.
+
+    src/cinterface       Routines for the AIRES library C language interface.
+
+    src/igrf             Routines from the GEOMAG package to calculate
+                         the geomagnetic field accordingly with the
+                         IGRF (International Geomagnetic Reference
+                         Field) model, plus the AIRES-GEOMAG interface.
+
+    src/netlib_minpack   Levenberg-Marquardt algorithm for nonlinear fitting
+                         (Public domain software which is part of the
+                         NETLIB library).
+
+    src/qgsjet           QGSJET package for hadronic collision processing,
+                         plus AIRES-QGSJET interface.
+
+    src/sibyll           SIBYLL package for hadronic collision processing,
+                         plus AIRES-SIBYLL interface.
+
+    src/unixdep          AIRES auxiliary routines that are operating system
+                         dependent, in their UNIX version.
+
+    src/util             Some auxiliary utility programs.
+
+    src/extensions*      AIRES auxiliary routines that contain
+                         instructions not belonging to the standard
+                         FORTRAN77. There are several directories of
+                         this kind, each one corresponding to
+                         different FORTRAN dialects.
+ 
+    src/sysdep*          AIRES auxiliary routines that are operating system
+                         and platform dependent. There are several directories
+                         of this kind, each one corresponding to a different
+                         platform.
+
+There are no customizable files here. It may eventually be necessary
+to create additional "unixdep", extensions*, or "sysdep*" kind
+directories (containing the corresponding sources) to solve
+portability problems when installing AIRES in a new system, different
+from the ones that can be selected in the configuration file. If it is
+your case, take into account before going on that this is an "advanced
+user" task, which generally requires a good knowledge of the system
+and the system routines.
+

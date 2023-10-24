@@ -1,0 +1,23 @@
+#
+# This is an example on how to use program mergeciofiles.
+#
+# Lines that begin with '#' are comments. Blank lines are ignored.
+#
+# In this example file1.grdpcles, file2.grdpcles and file3.grdpcles
+# are merged into fileout.grdpcles.
+# The header of the output file is identical to the header of the
+# first file in the input file list.
+# The headers of the other input files are ignored.
+#
+# First data line MUST contain output file name
+
+fileout.grdpcles
+
+# Then all the input files, one file per line
+
+file1.grdpcles
+file2.grdpcles
+file3.grdpcles
+
+# And that's it.
+#

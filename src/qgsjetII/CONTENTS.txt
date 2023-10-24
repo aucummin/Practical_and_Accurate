@@ -1,0 +1,37 @@
+
+
+    AIRES distribution src/qgsjetII directory CONTENTS.txt file.
+
+This directory contains the QGSJET-II (version qgsjet-II-03) hadronic
+interactions model of S. S. Ostapchenko (see, S. S. Ostapchenko, 
+Nucl. Phys. Proc. Suppl. B151 (2006) 143).
+
+
+The files within "qgsjetII" directory are:
+
+      AiresCalls.f            Interface AIRES-QGSJET-II.
+
+      psran.f                 Link between AIRES random number generator and
+                              the generator call used within QGSJET.
+
+      qgsjet-II-03.f          QGSJET-II routines. These routines were taken
+                              from the QGSJET file provided by the author.
+                              A few minor modifications were performed. Such
+                              modifications do not affect to any of the
+                              physics routines.
+
+      qgsjetII/               QGSJET-II original source code, as received
+      qgsjet-II-03.f.gz       from S. Ostapchenko.
+
+
+The subroutines that make the interface AIRES-QGSJET-II are written in
+standard FORTRAN 77, using a few extensions that are supported by all
+presently available compilers (to the best of our knowledge, of course).
+
+There are no user customizable files here. If you have installation problems
+it is unlikely that they are due to any of the procedures stored within this
+directory. Anyway, if you find something wrong that involves one or more of
+these files, we will very much acknowledge if you inform about the problem
+via electronic mail to sciutto@fisica.unlp.edu.ar. You may also
+contact QGSJET's authors (see inside qgsjet-II-03.f).
+

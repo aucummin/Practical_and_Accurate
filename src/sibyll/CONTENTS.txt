@@ -1,0 +1,35 @@
+
+
+    AIRES distribution src/sibyll directory CONTENTS.txt file.
+
+This directory contains the SIBYLL hadronic interactions model of Fletcher,
+Gaisser, Lipari and Stanev (see, R. Engel, T. K. Gaisser, T. Stanev, "Air
+Shower Calculations With the New Version of SIBYLL", proc. of the 26th ICRC,
+Utah 1999, vol. 1, p. 415).
+
+The files within "sibyll" directory are:
+
+      AiresCalls.f            Interface AIRES-SIBYLL.
+
+      sibyll_21.f             SIBYLL 2.1 routines. Some minor modifications
+      nuclib_21.f             were performed to adapt the package to the
+                              AIRES framework.
+
+      linkutils.f             Some auxiliary routines needed for the
+                              interface with AIRES.
+
+      sibyll_2-1              Directory containing the original source code,
+                              as delivered by its authors.
+
+
+The subroutines that make the interface AIRES-SIBYLL are written in standard
+FORTRAN 77, using a few extensions that are supported by all presently
+available compilers (to the best of our knowledge, of course).
+
+There are no user customizable files here. If you have installation problems
+it is unlikely that they are due to any of the procedures stored within this
+directory. Anyway, if you find something wrong that involves one or more of
+these files, we will very much acknowledge if you inform about the problem
+via electronic mail to sciutto@fisica.unlp.edu.ar. You may also contact
+SIBYLL's authors (see inside SIBYLL source code).
+

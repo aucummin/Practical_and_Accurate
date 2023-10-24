@@ -1,0 +1,9 @@
+
+
+    AIRES distribution ibin directory CONTENTS.txt file.
+
+This directory contains the unix scripts needed to install the AIRES
+software.
+
+There are no customizable files here.
+

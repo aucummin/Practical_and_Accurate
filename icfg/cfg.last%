@@ -1,0 +1,65 @@
+#
+# AIRES internal configuration file. DO NOT EDIT!
+#
+# File automatically created on date: Tue Sep 12 10:39:35 AM MDT 2023
+#
+iroot=/home/austin/macro_stuff/ZHAireS_Test/2-8-4a
+grdpclesenable="2"
+lgtpclesenable="4"
+thinningenable="1"
+cinterfaceflag="TRUE"
+cunderscores="TRUE"
+fortcommand="/usr/bin/gfortran"
+fortflags="-O2 -fallow-argument-mismatch"
+fortflags0=""
+linkcommand="/usr/bin/gfortran"
+linkflags="-O2"
+ccommand="/usr/bin/gfortran"
+cflags="-O2"
+nativeflag=""
+defaultextensiondir="extensions1"
+specialextensiondir=""
+defaultsysdepdir="sysdep1"
+specialsysdepdir="ccdaticpu sysdep1g64"
+fclibs=""
+arcommand="ar -cr"
+airesrc="linux"
+StackSizeInKB=5001
+diorecunit=1
+vr1=2
+vr2=8
+vr3=4a
+version=2-8-4a
+versionp=2.8.4a
+version0=284a
+airesroot="/home/austin/aires"
+airesrootver="/home/austin/aires/2-8-4a"
+bindir0="/home/austin/aires/2-8-4a/bin"
+bindir1="/home/austin/aires/bin"
+bindir2="/home/austin/aires/bin"
+binlink="0"
+libdir0="/home/austin/aires/2-8-4a/lib"
+libdir1="/home/austin/aires/lib"
+libdir2="/home/austin/aires/lib"
+liblink="0"
+MainName="Aires"
+SryName="AiresSry"
+otherprogs="IDF2ADF Merge"
+IDF2ADFName="AiresIDF2ADF"
+MergeName="AiresMerge"
+LibName="libAires.a"
+nsimprogs="Q QII"
+MainNameQ="AiresQ"
+MainNameQII="AiresQII"
+substituteairesrc='1.*.* 2.0.* 2.2.* 2.4.* 2.6.* 2.8.0'
+sameroots="0"
+oldaires=3
+oldvr1=2
+oldvr2=8
+oldvr3=4a
+oldversion=2-8-4a
+oldversionp=2.8.4a
+oldroot="/home/austin/aires"
+oldbindir="/home/austin/aires/2-8-4a/bin"
+cfgdir0="/home/austin/aires/2-8-4a/cfg"
+rcwng=1

@@ -1,0 +1,46 @@
+#
+# ----------
+# platcfg.hp
+# ----------
+#
+# This is a sh script to set Hewlett-Packard platform specific settings.
+# Is is "sourced" from other sripts.
+#
+# Written by S. J. Sciutto, La Plata 1997, 1998, 2000, 2002.
+#
+# Last modification: 05/Apr/2002.
+#
+###############################################################################
+#
+# Settings for HP-UX workstations.
+#
+fortcommand="f77"
+fortflags="+O3 +U77 +ppu -w"
+fortspecialflags="+ppu -ppu +U77"
+fortno0flags=""
+fortflags0="+O2 +U77 +ppu -w"
+linkcommand="f77"
+linkflags="+O3 +U77 +ppu -w"
+linkflags0="+O2 +U77 +ppu -w"
+linkspecialflags="+ppu -ppu +U77"
+linkno0flags=""
+ccommand="cc"
+cflags=""
+nativeflag=""
+diorecunit=1
+defaultextensiondir="extensions1"
+defaultsysdepdir="sysdep2"
+specialsysdepdir="mvfile sysdep1"
+specialsysdepdir="$specialsysdepdir sysspawn sysdep1"
+fclibs=""
+cunderscores=TRUE
+arcommand="ar -cr"
+airesrc=hp
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Do not place any "exit" here!
+#
+###############################################################################
+#

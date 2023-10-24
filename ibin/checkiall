@@ -1,0 +1,205 @@
+#!/bin/sh
+#
+# ---------
+# checkiall
+# ---------
+#
+# AIRES installing system internal script.
+# (Checking that binaries and libraries are properly installed).
+#
+# Written by S. J. Sciutto, La Plata 1997; Fermilab 1999.
+#
+# Last modification: 26/Apr/1999.
+#
+# Usage:
+#
+#   checkiall config_file install_level
+#
+# DO NOT MODIFY THIS SCRIPT!
+#
+###############################################################################
+#
+config=$1
+instlevel=$2
+. ./cfg.tmp
+#
+echo
+echo ">>> Checking the installed files."
+#
+# Checking the existence of executable files.
+#
+cd $bindir0
+#
+mainprs="$MainName"
+for mainprog in $nsimprogs; do
+  mainprs="$mainprs $MainName${mainprog}"
+done
+oprs=""
+for prog in $otherprogs; do
+  tmpvar="\$${prog}Name"
+  eval otherprog="$tmpvar"
+  oprs="$oprs $otherprog"
+done
+#
+for file in $mainprs $SryName $oprs; do
+  if [ ! -x $file -o ! -s $file ]
+  then
+    echo
+    echo FATAL. Internal installation check failed:
+    echo Executable binary file $file missing or invalid
+    echo Installation aborted.
+    rm -f $iroot/cfg.tmp
+    exit
+  fi
+done
+#
+# Checking the existence of object libraries..
+#
+cd $libdir0
+for file in $LibName; do
+  if [ ! -s $file ]
+  then
+    echo
+    echo FATAL. Internal installation check failed:
+    echo Object library $file missing or invalid
+    echo Installation aborted.
+    rm -f $iroot/cfg.tmp
+    exit
+  fi
+done
+cd $iroot
+#
+# Checking that the main program(s) do run.
+#
+if [ $instlevel -le 1 ]
+then
+  for mainprog in $mainprs; do
+    rm -f output.TMP *GIVE_ME_A_NAME_PLEASE* __Aires*
+    $bindir0/$mainprog <<EOID > output.TMP 2>&1
+         # Simple instructions just to check that the program runs.
+         CheckOnly
+         End
+EOID
+#
+    rm -f *GIVE_ME_A_NAME_PLEASE* __Aires*
+    if [ -s output.TMP ]
+    then
+      ntimes=`grep -c 'GIVE_ME_A_NAME_PLEASE' output.TMP`
+      rm -f output.TMP
+      if [ $ntimes -le 1 ]
+      then
+        echo
+        echo FATAL. Internal installation check failed:
+        echo Main program \($mainprog\) did not give expected output.
+        echo Installation aborted.
+        rm -f $iroot/cfg.tmp
+        exit
+      fi
+    else
+      rm -f output.TMP
+      echo
+      echo FATAL. Internal installation check failed:
+      echo Main program \($mainprog\) produced no output.
+      echo Installation aborted.
+      rm -f $iroot/cfg.tmp
+      exit
+    fi
+  done
+  echo "    Check completed successfully."
+else
+  echo "    Done."
+fi
+#
+# Everything ended OK.
+#
+if [ $instlevel -le 1 ]
+then
+#
+# Replacing .airesrc file if necessary.
+#
+  cd $HOME
+  if [ -f .airesrc -o -h .airesrc ]
+  then
+    moved=
+    if [ "_$substituteairesrc" != "_" ]
+    then
+      set -f
+      notmoved=TRUE
+      for instance in $substituteairesrc; do
+        case "$oldversionp" in
+          ${instance})
+            if [ $notmoved ]
+            then
+              iprev=4
+              rm -f .airesrc.bck.4
+              for i in 3 2 1; do
+                 if [ -f .airesrc.bck.$i ]
+                 then
+                   mv .airesrc.bck.$i .airesrc.bck.$iprev
+                 fi
+                 iprev=$i
+              done
+              if [ -f .airesrc.bck ]
+              then
+                mv .airesrc.bck .airesrc.bck.1
+              fi
+              mv .airesrc .airesrc.bck
+              cp $bindir0/airesrc ./.airesrc
+              moved=TRUE
+              notmoved=
+            fi
+          ;;
+        esac
+      done
+      set +f
+    fi
+    if [ $moved ]
+    then
+      rcwng=2
+    else
+      rcwng=1
+    fi
+  else
+    cp $bindir0/airesrc ./.airesrc
+    rcwng=0
+  fi
+  echo "rcwng=$rcwng" >> $iroot/cfg.tmp
+#
+# Making this version the current version.
+#
+  cd $airesroot
+  if [ -h current ]
+  then
+    rm -f current
+  elif [ -f current -o -d current ]
+  then
+    mv -f current current.bck
+  fi
+  ln -s $version current
+  if [ ! -d current ]
+  then
+    echo Cannot create link to AIRES root directory \(${airesroot}/current\).
+    echo Installation aborted.
+    rm -f $iroot/cfg.tmp
+    exit
+  fi
+fi
+#
+# Saving the configuration file used.
+#
+if [ -f ${iroot}/cfg.tmp ]
+then
+  for cdir in ${iroot}/icfg $cfgdir0; do
+    if [ -f ${cdir}/cfg.last ]
+    then
+      rm -f ${cdir}/cfg.last%
+      mv -f ${cdir}/cfg.last ${cdir}/cfg.last%
+    fi
+    cp ${iroot}/cfg.tmp ${cdir}/cfg.last
+  done
+fi
+#
+exit
+#
+###############################################################################
+###############################################################################

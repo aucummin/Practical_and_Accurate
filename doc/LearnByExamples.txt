@@ -1,0 +1,349 @@
+
+
+    Learning to use AIRES by examples.
+
+    Last revision: 19/Oct/2001.
+
+
+You need to properly install the AIRES software before proceeding with the
+examples here presented. To do that, see the file "Install.HowTo" in the
+distribution main directory. It is assumed here that the whole installation
+procedure has been successfully completed.
+
+It is also recommendable to give a look to the user's manual (file
+UsersManual.ps) and enventually print it.
+
+The following "lessons" will help you learning how to use AIRES. We STRONGLY
+recommend to follow all the instructions sequentially from the beginning to
+the end.
+
+ 0) Enter the command (case sensitive)
+
+      AiresVersion
+
+    or
+
+      airesversion
+
+    The current AIRES version will be typed at your terminal. If you cannont
+    execute successfully this step, then your installation may not be OK.
+
+ 1) cd to a scratch directory, or make a new special directory in your account.
+    This directory needs not be related with the AIRES system.
+
+ 2) Copy the contents of the "demos" subdirectory (within the AIRES directory
+    tree) into your working directory.
+
+ 3) Enter the command (case sensitive)
+
+       Aires
+
+    You should obtain an output similar to the one explained in
+    "Install.HowTo" or in Appendix A of the user's manual. If you also try the
+    command
+
+       AiresQ
+
+    you should again obtain a similar output. The simulation programs Aires
+    and AiresQ are very similar. The only difference is that they are
+    linked to different hadronic interaction models: SIBYLL for Aires and
+    QGSJET for AiresQ. We shall use Aires in our examples just to fix ideas,
+    they can be reproduced with AiresQ as well.
+
+ 4) Now enter
+
+       ?
+
+    A list of the available directives should appear typed at your terminal.
+    Like the directive "?" (synonym of "Help"), all these directives define
+    the Input Directive Language (IDL) which is a set of instructions (normally
+    placed in files) designed to steer the simulations and control their
+    environmental conditions.
+    You will also see a prompt "Aires IDL>" indicating precisely that AIRES
+    is waiting for your directives. The prompt is normally off, but was
+    automatically enabled after entering the "?" directive: AIRES assumes
+    an interactive session every time "?" is entered; from an input file is
+    better to use "Help" instead.
+
+ 5) Enter the following directives (case sensitive!):
+
+       Task mytask
+       Primary proton
+       PrimaryEnergy 30 TeV
+       Thinning 0.0001 Rel
+       TotalShowers 1
+       End
+
+    It is important to enter EXACTLY these directives. No more, no less, and
+    with the same numbers.
+    These directives define the main parameters needed to specify the
+    conditions of a simulation. "mytask" can be any string, such as "Joe",
+    "x25", etc, and defines the "task name".
+    Then the directive "PrimaryParticle", abbreviated as "Primary" defines the
+    primary. Particles are known by their name, so you do not need to remember
+    any particle codes to be used as input. Other particle names are: Gamma (or
+    gamma), pi+, mu-, iron (or Fe, all nuclei can be specified using their
+    chemical names), etc. A complete listing of the particle names is given
+    in the documentation.
+    "PrimaryEnergy 30 TeV" defines the energy of the primary particle, in this
+    case a fixed energy of 3 10^13 eV. All usual energy units (eV, KeV,...) are
+    accepted. You can also specify: PrimaryEnergy 1.0e19 eV 1.0e20 eV 2.2
+    indicating varying energy with an exponential spectrum with gamma = 2.2
+    Notice that all directives are case sensitive and most of them use lower
+    and uppercase letters. This is adequate for professional (not interactive)
+    use of the program since the input files can be made more readable.
+    After the "End" directive the program will print the input information
+    on your terminal (all non-set parameters are given default values), and the
+    simulation will begin. After some seconds (depending on your machine's
+    speed) the program will end. If you have problems and need to run the
+    program more than once, you MUST delete the files mytask.* before repeating
+    the run.
+
+ 6) Enter "ls" to see the files in the current directory. Notice the presence
+    of the following files:
+
+          Aires.status
+          mytask.grdpcles
+          mytask.idf
+          mytask.lgf
+          mytask.sry
+
+    Here "mytask" stands for the string used as task name.
+    Aires.status contains information about the simulation, and is used
+    by other programs.
+    mytask.grdpcles contains a listing of the particles that reached ground,
+    in compressed format (see the documentation).
+    mytask.idf is the "Internal Dump File", a binary file that contains
+    all the relevant information related with the simulation program.
+    Later we will see an example of use of this file.
+    mytask.lgf is a log file containing information about the run.
+    mytask.sry is an output file containing a brief summary of the results of
+    the simulation. It is a text file so you can have a look at it to watch
+    its contents. Notice, however, that this summary file does not include
+    all the available data. Later we will see how to extract it.
+
+ 7) Let us go on to the next "exercise". In the "demos" directory there is a
+    file named "demo1.inp". Take a look at the file and to the comments there
+    included.
+
+ 8) One you have finishing looking at the input file, enter the command
+
+       airescheck -t demo1.inp
+
+    This procedure invokes the simulation program with some special settings:
+    "Trace On" (due to the -t qualifier) and "CheckOnly". The first IDL
+    directive tells AIRES to echo the input directives as they are being
+    processed (notice that comments and skipped records are not typed).
+    "CheckOnly" instructs the program to process all the input data but
+    without starting the simulations. This is very useful to check a new
+    input file before launching the simulation.
+    A summary of the input data is also produced. Take a look at it.
+    Notice that all parameters set by default are marked as such.
+
+ 9) Launch the simulation program:
+
+       Aires < demo1.inp
+
+    You will see the summary of input data printed at your terminal, ending
+    with the following lines:
+
+    >>>>
+    > dd/Mmm/yyyy hh:mm:ss. Beginning new task.
+    > dd/Mmm/yyyy hh:mm:ss. Starting simulation of first shower.
+
+    The simulation is running...
+
+10) Please do not go away from your terminal. After a while (about 1-2 min)
+    the first shower will complete. The input directive "ShowersPerRun 1"
+    indicates that the end of the first shower is also the end of the
+    first run. "Run" here means the processing chunk that lies between two
+    consecutive updates if the IDF file. The end of the run will be
+    announced with the following lines:
+
+    > dd/Mmm/yyyy hh:mm:ss. End of run number 1.
+      Completed (total) showers: 1 (3)
+      CPU time for this run: ............
+
+    Now the second shower is running. Stop immediately the program using
+    CONTROL-C or killing the process (simulating a system crash).
+
+11) List the files in your directory. You will see something like:
+
+    Aires.status                demo1.grdpcles
+    __Aires1001_nnnn.grdpcles   demo1.idf
+    __Aires1001_nnnn.pstack071  demo1.inp
+    __Aires1001_nnnn.pstack072  demo1.lgf
+    __Aires1001_nnnn.pstack073  demo1s.inp
+    __Aires1001_nnnn.pstack074
+    __Aires1001_nnnn.rmks_TMP
+    __Aires1001_nnnn.shwz_TMP
+
+    The files of the form __Aires1001_*.* are internal files that are deleted
+    if the program ends normally. The other files are as explained before.
+
+12) Remove the internal files (rm __Aires*) and run the program again:
+
+       Aires < demo1.inp
+
+    Now you will see a different behaviour:
+
+    > dd/Mmm/yyyy hh:mm:ss. Reading data from standard input unit
+    > dd/Mmm/yyyy hh:mm:ss. Internal data file read. Continuing with current...
+      Process number 2 (Last completed run: 1).
+      Detected previous aborted run. This is trial # 2.
+
+    Thanks to the IDF file (demo1.idf) and the status file (Aires.status) the
+    program realized that the first run was completed and started with the
+    second shower. Notice the importance of this if you have a task demanding
+    many processing days and the system goes down in the meantime.
+
+13) Let the program finish normally, and then list again the files in the
+    current directory:
+
+    Aires.dirs      demo1.idf       demo1.sry       demo1.tex
+    Aires.status    demo1.inp       demo1.t2793     demo1s.inp
+    demo1.grdpcles  demo1.lgf       demo1.t5501
+
+    If a LATEX processor is available in your system, we recommend processing
+    the file "demo1.tex", and printing it:
+
+       latex demo1
+       whatever command(s) needed to print a latex file
+
+    If you cannot process the file, look directly into the file "demo1.sry"
+    In any case you will see a brief summary (as explained in (6)), together
+    with the tables indicated in file "demo1s.inp" (look at the table numbers).
+    The table index lists all available tables (more than 100). This index
+    can be typed at your terminal invoking AIRES interactively and entering
+    the directive "Help tables" (or "? tables").
+
+14) Look at the files demo1.tnnnn (nnnn a number). They are plain text files
+    containing table data, for the tables indicated with the "ExportTable"
+    directives within file "demo1s.inp".
+
+15) And the tables not Print(ed)/Export(ed)? They are stored in the IDF file.
+    If you want, say, export table 2001 (Gammas lateral distribution), you can
+    do it using the AiresSry program. You have several alternatives:
+    Interactively:
+
+        AiresSry
+           Task demo1
+           Summary Off # Don't want another summary.
+           Export 2001
+           End
+
+     or
+
+        AiresSry
+           Input demo1.inp # In case you don't remember the task name.
+           Summary Off
+           Export Clear # To cancel previous Export's (within "demo1.inp")
+           Export 2001
+           End
+
+    Not interactively, making a second input file (in this case the file
+    "demo1sry.inp" is provided, see it) and doing
+
+        AiresSry < demo1sry.inp
+
+    Using the script airesexport:
+
+        airesexport demo1 2001
+
+    In a similar way you can alter the Print(ed) tables.
+
+16) The tables related to longitudinal shower development quantities have one
+    entry per observing level; the lateral, energy and time distribution tables
+    have 40 logarithmic bins covering radial (energy) intervals [Rmin, Rmax]
+    ([Emin, Emax]). The directive "ObservingLevels" permits changing the number
+    of observing levels, and the directives RLimsTables (ELimsTables) allow
+    the user to modify Rmin and Rmax (Emin and Emax).
+
+17) The file demo1.grdpcles contains the ground particle data. For every
+    particle reaching ground and such that its distance to the shower axis
+    lies in the range [Rminf, Rmaxf] (These values can be set with the
+    directive RLimsFile). The data recorded includes: particle code, energy,
+    distance to the axis, polar angle in the ground plane, arrival time,
+    unitary vector pointing the direction of motion and weight. Data is
+    written in compressed form, every particle record has a length of 18
+    characters (bytes). The AIRES distribution includes all the software
+    needed to read compressed files. The file format is universal, in the
+    sense that a file can be written in one machine and analyzed in other
+    (this is valid even for non-ascii systems).
+    The demonstration programs ciodemo.f and cio0.f illustrate how to work
+    with compressed files. They are extensively commented and very simple.
+    Try looking at these files and the guidelines therein. You can also
+    look to the AIRES user's manual to obtain information related with the
+    AIRES object program library.
+
+18) The directive "ForceInit" forces AIRES to start a new task every time
+    it is invoked. Try adding this directive to the file "demo1.inp"
+    and repeating (8)-(13).
+
+19) All the examples presented so far have been prepared with the main
+    purpose of illustrating AIRES usage, not in the physical results.
+    If you want to verify that your AIRES system is working OK, you can run
+    the simulation defined in the inputfile "test1.inp" (Three 5x10^17 eV
+    iron primary showers). These simulations may take several minutes to
+    complete. The file test1.sry.original contains the summary file obtained
+    when running "Aires<test1.inp" at our system. Results coming out from
+    runs in computers with different hardware need not be bitwise identical
+    with the original ones: You should consider the consistency of the results
+    only from the physical point of view.
+
+20) The final lessons will focus on "professional" use of the program.
+
+21) If you need to do simulations that will require large amounts of
+    processing time you can configure AIRES to periodically update the IDL
+    file to prevent loosing all the processed simulations in case of a
+    system crash or shutdown. Directives "ShowersPerRun", "MaxCpuTimePerRun"
+    and "RunsPerProcess" provide adequate control. See the documentation
+    for a more complete description of them.
+
+22) In a UNIX environment you can use a series of scripts, referred as
+    "Aires Runner System" to manage batch jobs.
+
+23) The input file "demo2.inp" contains directives to generate 10 proton and
+    iron showers with energies in the range 10^19 eV 10^20 eV and 5 x 10^-5
+    relative thinning. This task will demand some time to complete (Reducing
+    the thinning can significantly enlarge this time).
+
+24) Enter the command
+
+        airestask demo2
+
+    After entering the command, you should see the following output:
+
+    Input file: demo2.inp
+    Task normally spooled.
+    Log file (demo2.rlog) will be placed in current directory.
+
+
+    There are spooled tasks and no running simulation program for spool 1.
+    Do you wish to start the simulation(s) now? [Y]:
+
+    Answer yes. The simulations will start as a background job. And that's
+    all: The Aires Runner System will manage the process(es) until the
+    task is completed. If the system goes down before task completion, you
+    can re-launch it with the command
+
+        aireslaunch
+
+    At every moment you can see the status of the simulation process using
+    the command
+
+        airesstatus
+
+    Try it right now. You will obtain information about task "demo2".
+    When the task completes, you will receive a mail message.
+    You can submit as many tasks as you need using airestask. They will be
+    queued and executed one at a time until completion of the last task.
+
+25) After task "demo2" is finished, return to the working directory where
+    file "demo2.inp" is and take a look to the log files: "demo2.lgf" and
+    "demo2.rlog". You will see how the simulations were carried on.
+
+26) Good luck, and have a nice time making simulations with AIRES.
+
+ ------------------------------------------------------------------------------
+

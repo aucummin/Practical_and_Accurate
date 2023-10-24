@@ -1,0 +1,132 @@
+
+
+    AIRES distribution main directory Install.HowTo file.
+
+    Last revision: 23/Mar/2005.
+
+
+If you are reading this file, that means that you succeeded in downloading
+the software, uncompressing the distribution file and extracting its
+contents with the "tar" command; and are ready for installing the
+software.
+
+The installing procedure is quite simple. The key points to take into
+account are:
+
+   (a)  A Unix shell script "doinstall" is provided. This script will install
+        the software automatically.
+
+   (b)  The file "config" contains all the customizable variables.
+        You must edit it before invoking "doinstall"
+
+   (c)  There will be two main directories: (i) "Installation root directory"
+        (Iroot), which is the directory where the distribution file was
+        downloaded (that is, the directory where this "Install.HowTo" file is).
+        (ii) "Aires root directory" (Aroot), which is the highest level
+        directory for the installed files. You will need to specify Aroot.
+        For standard, personal installation, the default (creating a directory
+        named "aires" in your home directory) will be OK. Notice that the
+        Iroot and Aroot directories may or may not be the same directory
+        (Do not worry about this: The installation program will manage
+        every case properly.).
+
+   (d)  Your account must have access to a FORTRAN 77 compiler (normally,
+        commands f77 or fort77), and in some cases to a C compiler
+        (commands cc, gcc, etc.). The C compiler is also required if you want
+        to load the C interface of the AIRES object library (see
+        documentation); and these compilers must be placed in one of the PATH
+        directories (in other words, if you type at your terminal, say, f77,
+        the machine will take "f77" as a known command). If the compilers are
+        not in the PATH you will have to enter their absolute location
+        manually in the "config" file (Our recommendation, however, is to
+        ensure that the compilers are in the PATH. It is something not
+        difficult to achieve. If you do not know how to proceed or what we are
+        speaking about, then ask your local UNIX expert).
+
+   (e)  The simulation program uses scratch files for internal data paging.
+        The scratch space needed for a run depends on the input parameters
+        and the size of the internal particle stacks. For ultra-high-energy,
+        hard-thinned showers (Primary energy greater than 10^18 eV, primary
+        energy over thinning energy ratio greater than 10^6.), and for a
+        stack size of 5 MB (the default), a minimum of 25-30 MB scratch file
+        space will be needed during the simulations. If you want to reduce the
+        scratch space requirements, then you will have to lower the stack size,
+        modifying the corresponding parameter in file "config".
+
+
+Installation procedure step by step
+===================================
+
+1) Ensure that you have write permission on both Iroot and Aroot directories,
+   and in all their sub-directories.
+
+2) cd to Iroot, and edit the file "config". Set all the variables accordingly
+   with the guidelines and with your needs. It is mandatory to select one
+   and only one platform. If none of the specified platforms matches your
+   machine, then you should try using "the most adequate one", continuing
+   with the installation procedure and seeing what happens. Save the file
+   and leave the edit session when finished.
+
+3) Enter the command
+
+       doinstall 0
+
+   if you are installing AIRES for the first time, or
+
+       doinstall 1
+
+   if you are upgrading your current installation (NOTE: DO NOT ERASE any
+   existing installation of AIRES before completing the upgrade).
+   This procedure will install the software using the data you set in step 2.
+   This may take some minutes to complete. A message will be typed at your
+   terminal indicating whether the installation was successful or not. If you
+   get error message(s), you should check all the requirements described
+   previously, in particular points (d) and (1). Try also modifying the
+   "config" file.
+
+   If you are upgrading AIRES (A previous version of AIRES is already
+   installed in your system), then you should read appendix E of the User's
+   Manual before starting using the new version.
+
+4) Type the command (case sensitive)
+
+      Aires
+
+   to see if the program is running and is in your search path. You should
+   see typed at your terminal something like the following text:
+
+   >>>>
+   >>>> This is AIRES version n.n.n (dd/Mmm/yyyy)
+   >>>> (Compiled by .....
+   >>>> USER: uuuuu, HOST: hhhhhhh, DATE: dd/Mmm/yyyy
+   >>>>
+
+   > dd/Mmm/yyyy hh:mm:ss. Reading data from standard input unit
+
+   Type x and press <ENTER> to leave the program.
+   If step 3 ended successfully and you fail to run the program, it is
+   likely that the AIRES "bin" directory is not in your environment search path
+   (Unix environment variable PATH). In some systems you need to log out and
+   log in again to make effective any PATH change. If you cannot place the
+   AIRES "bin" directory is in your PATH, then ask a Unix expert to do that for
+   you. Once you are sure that the directory is in the search path, and if the
+   problem still persists, check if the executable file "Aires" exists. If it
+   does not exist that means that step 3 was not successfully completed. Do
+   not continue with the next step until you succeed with this one.
+
+5) cd to your HOME directory and verify the presence of a file named .airesrc
+   Normally it is not necessary to change anything in this file, but the
+   need may appear in the future, specially if you decide to use the
+   UNIX scripts that are provided to help running AIRES
+
+6) If you completed successfully these steps, the software should be properly
+   installed. In that case cd to the Iroot directory again, enter the doc
+   sub-directory, print the file LearnByExamples.txt, and follow the
+   instructions that are in this file to learn how to use AIRES.
+
+7) After successfully completing these steps you can delete the files
+   corresponding to old versions of AIRES. Such files are placed within the
+   Aroot directory. For example, directory 1-2-0 contains AIRES 1.2.0 files,
+   etc.
+
+ ------------------------------------------------------------------------------

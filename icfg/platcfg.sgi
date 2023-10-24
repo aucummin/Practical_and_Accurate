@@ -1,0 +1,45 @@
+#
+# -----------
+# platcfg.sgi
+# -----------
+#
+# This is a sh script to set Silicon Graphics platform specific settings.
+# Is is "sourced" from other sripts.
+#
+# Written by S. J. Sciutto, La Plata 1997, 1998, 2000.
+#
+# Last modification: 26/Sep/2000.
+#
+###############################################################################
+#
+# Settings for SGI workstations.
+#
+fortcommand="f77"
+fortflags="-O3"
+fortspecialflags=""
+fortno0flags=""
+fortflags0="-O2"
+linkcommand="f77"
+linkflags="-O2"
+linkflags0="-O2"
+linkspecialflags=""
+linkno0flags=""
+ccommand="cc"
+cflags="-O2"
+nativeflag=""
+diorecunit=4
+defaultextensiondir="extensions1"
+defaultsysdepdir="sysdep3"
+specialsysdepdir="mvfile sysdep1"
+fclibs=""
+cunderscores=TRUE
+arcommand="ar -cr"
+airesrc=sgi
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Do not place any "exit" here!
+#
+###############################################################################
+#

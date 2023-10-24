@@ -1,0 +1,72 @@
+#
+# -------------
+# platcfg.lxold
+# -------------
+#
+# This is a sh script to set PC platforms with old versions of Linux OS
+# Is is "sourced" from other sripts.
+#
+# Written by S. J. Sciutto, La Plata 1998, 2000, 2002, 2005.
+#
+# Last modification: 19/Aug/2005.
+#
+###############################################################################
+#
+# Settings for old Linux PC workstations.
+#
+# Seeing if the fort command is gfortran, g77, f77 or fort77.
+#
+fcunset=TRUE
+#
+for fcc in gfortran g77 f77 fort77; do
+  if [ $fcunset ]
+  then
+    set xxx `which $fcc 2>&1`
+    if [ $# -eq 2 ]
+    then
+      fortcommand="$2"
+      fcunset=
+    fi
+  fi
+done
+#
+if [ $fcunset ]
+then
+  fortcommand="g77"
+  echo
+  echo WARNING. Could not find any FORTRAN compiler.
+  echo Will try with g77 ... with crossed fingers!!
+  echo
+fi
+#
+fortflags="-O2"
+fortno0flags=""
+fortflags0=""
+#
+# Detecting old systems using f2c.
+#
+defaultsysdepdir="sysdep1"
+specialsysdepdir="ccdaticpu sysdep1old"
+#
+linkcommand="$fortcommand"
+linkflags="-O2"
+linkflags0=""
+linkspecialflags=""
+linkno0flags=""
+ccommand="$fortcommand"
+cflags="-O2"
+nativeflag=""
+diorecunit=1
+defaultextensiondir="extensions1"
+fclibs=""
+cunderscores=TRUE
+arcommand="ar -cr"
+airesrc=linux
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Do not place any "exit" here!
+#
+###############################################################################
+#

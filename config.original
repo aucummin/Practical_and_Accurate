@@ -1,0 +1,262 @@
+#
+# ------
+# config
+# ------
+#
+# AIRES installation system configuration file
+#
+# EDIT THIS FILE AND SET THE CORRESPONDING OPTIONS BEFORE INVOKING THE
+# INSTALL PROCEDURE.
+#
+###############################################################################
+#
+# VERY IMPORTANT: READ THIS FIRST.
+#
+# In this configuration file there are many options that allow the user to
+# install AIRES in different situations. It is important to notice, however,
+# that standard personal installation rarely demand any further action
+# beyond platform selection and compressed file record selection.
+#
+# Use the other options only if needed and taking into account that some
+# degree of understanding of the UNIX environment is required to properly
+# set the different options placed after the platform selection section.
+#
+# When a variable is set equal to the null string "" it does not mean that
+# you must necessarily set it to some value; instead, that means that the
+# installation program will set it automatically accordingly with the current
+# platform in case it was left unset.
+#
+###############################################################################
+#
+# PLATFORM/OPERATING SYSTEM.
+#
+# Uncomment one and only one of the following lines to select the platform/
+# operating system. If your computer is not in the list, try with the
+# "closest" option (successful installation cannot be guaranteed in this case).
+#
+#Platform=DECAlpha   # Digital Alpha workstations (DEC unix).
+#Platform=IBM        # IBM workstations (AIX OS).
+#Platform=HP         # HP workstations.
+#Platform=Linux      # PC's with Linux OS (including 64 bit processors).
+#Platform=LxOld      # PC's with very old versions of Linux OS.
+#Platform=LxAlpha    # Alpha workstations with Linux OS.
+#Platform=SGI        # Silicon Graphics workstations.
+#Platform=SUN        # SUN workstations with SunOS operating system.
+#Platform=SUN5       # SUN workstations with UNIX System V OS.
+#
+#
+# AIRES ROOT DIRECTORY AND RELATED ONES.
+#
+# Specify where to place AIRES' stuff. You should always specify an absolute
+# directory name (complete name, starting with /...).
+# The default root directory is ${HOME}/aires
+# If you change the default you will then need to accordingly modify the
+# personal customization file ".airesrc"
+#
+AiresRootDir=${HOME}/aires
+#
+# By default, executable binaries and libraries will be placed within
+# "bin" and "lib" directories inside the AiresRootDir directory. These default
+# values are normally ok; the only further action required is to place
+# the "bin" directory into the search path of your UNIX environment.
+# You can alternatively specify other "bin" and "lib" directories
+# setting the corresponding variables below. Only absolute path specifications
+# are allowed. If the variables "Set???Links", are set to YES, the
+# corresponding files will be placed in the respective default directory and
+# symbolic links will be set to the specified directories; otherwise the files
+# will effectively be in the specified directories.
+# Example: Suppose AiresRootDir is equal to /x/aires. The default bin (lib)
+# directory is /x/aires/bin (/x/aires/lib). Suppose you set:
+# AbsoluteBinDir=/usr/local/bin and AbsoluteLibDir=/usr/local/lib,
+# SetBinLinks=YES and SetLibLinks=NO. Then: (1) Binaries will be located in
+# /x/aires/bin with (soft) links to /usr/local/bin. (2) Libraries will be
+# located in /usr/local/lib.
+# If you change the defaults you will then need to accordingly modify the
+# personal customization file ".airesrc"
+#
+AbsoluteBinDir=""
+SetBinLinks=YES
+AbsoluteLibDir=""
+SetLibLinks=YES
+#
+# COMPILE TIME SELECTION SWITCHS.
+#
+# COMPRESSED OUTPUT FILES: The following parameters control the format of the
+# -----------------------  records in the compressed files available. If you
+#                          are not sure about how to set the compressed data
+# files or do not understand clearly this section, then leave the corresponding
+# parameters unchanged: The default values will be OK for standard cases.
+#
+# Ground particle file: The possible settings for this file are:
+#
+# 1. "Short" format. The record contains all the fields of the "normal" format
+#    excluding the direction of motion data (2 fields); this reduces record
+#    size in about 22%.
+# 2. Normal format. The record contains the following data fields: Particle
+#    code, energy, distance to the core, polar angle, direction of motion,
+#    arrival time and statistical weight.
+# 3. "Long" format (Normal format fields plus particle creation depth and last
+#    hadronic interaction dept); this will enlarge record size in about 22%.
+#
+GrdpclesFormat=2
+#
+# Longitudinal tracking particle file: There are many possible settings for
+#                                      this file, namely:
+# 0. File disabled. You can use this option if you are surely not going to use
+#    this file. This will generate a slightly smaller executable program, a
+#    few percent faster. Notice however that if this file is enabled, it is
+#    still possible prevent generating any longitudinal tracking data by means
+#    of the input directive "SaveInFile lgtpcles None".
+# 1. "Short" record, contains only the basic data fields: Particle code,
+#    observing levels crossed, (x, y) coordinates, passing time and statistical
+#    weight.
+# 2. "Normal-a" record, contains the basic data fields plus particle energy
+#    (Size = 1.25 size of "short" record).
+# 3. "Normal-b" record, contains the basic data fields plus direction of
+#    motion (ux, uy) (Size = 1.42 size of "short" record).
+# 4. "Long" record, contains the union of the fields of "normal-a" and
+#    "normal-b" records (Size = 1.58 size of "short" record).
+# 5. "Extra-long" record, contains the same data fields as the "Long"
+#    record plus particle creation depth and last hadronic interaction depth
+#    (Size = 1.92 size of "short" record).
+#
+LgtpclesFormat=4
+#
+# THINNING: Statistical sampling (thinning) can be enabled or disabled (full
+# --------  propagation of all particles). The default (thinning enabled) is
+#           normally the adequate choice for most applications. Notice that
+# disabling thinning may significantly enlarge the CPU time required to
+# complete a given task.
+#
+EnableThinning=YES
+#
+# C INTERFACE: The following parameter controls whether or not the C-FORTRAN
+# -----------  interface modules must be compiled and included in the AIRES
+#              object library. Set the parameter to YES to include those
+# modules in the library. Notice that this requires that a C compiler must be
+# properly installed in your system. Select NO if you are not going to use C
+# programs to analyse the compressed output data files and/or you have not a C
+# compiler.
+#
+LoadCInterface=YES
+#
+# COMPILE, LOAD, ... ETC. COMMANDS.
+#
+# If your system posesses non-standard compiler names or options, then you can
+# specify the commands that correspond to the FORTRAN compiler, C compiler,
+# etc, as well as some optimization flags. Leave these variables unset and the
+# installation program will adjust them accordingly with the selected platform.
+# If you do have problems with the compilation phase of the installation and
+# are not familiar with software compilation tasks, then you should ask a UNIX
+# expert to do the eventually required modifications.
+# There are two alternative syntaxes for both the compile and load flags and
+# the compilation libraries: (i) Absolute, for example: FortFlags="-O2". Such
+# specification fully overrides the default setting. (ii) Additive, for
+# example: FortFlags="+++ -O2". The "+++ " indicates that the specified flag(s)
+# will be appended to the default ones.
+#
+FortCompile=""          # Fort compile: f77, fort77, ...
+FortFlags=""            # Fortran compilation flags: -O2, ...
+CCompile=""             # C compile: cc, gcc, ...
+CFlags=""               # C compilation flags: -O2, ...
+LoadFlags=""            # Load (link) step flags.
+CompLibs=""             # To include libraries: -L.... -l....
+ArchiveCreate=""        # Archive create: ar -cr, ar cr, ...
+#
+# OPTIMIZATION LEVEL. You can select between normal (1) and full optimization
+# (2) levels. This parameter is not taken into account if you have set the
+# variables mentioned in the previous paragraph. The default (2) is OK for
+# most cases.
+#
+OptimizationLevel=2
+#
+# Are you going to run the program in the same machine used for the
+# installation? If this is true, then set the following variable to "YES",
+# so the installing procedure will enable (when available) some compiler flags
+# that permit improved program optimization based on the knowledge of the
+# processor characteristics. If not, or if you plan to use the same binaries
+# in different machines, leave this variable unchanged.
+#
+NativeBinaries=NO
+#
+###############################################################################
+#
+# "ADVANCED USER" PARAMETERS.
+#
+# The following section contains some parameters that must be modified
+# in special cases which do not include standard personal installation.
+# Therefore, you should not find anything to change beyond this point,
+# unless you intend to make a system-wide installation, complementary
+# compilation creating different executable binaries or have had problems
+# when running a standard installation.
+#
+# If that is not your case, you can finish your configuration here and
+# continue with the next installation step.
+#
+# Executable binaries and object libraries names.
+#
+# The following are the default names for the main simulation program,
+# the summary program and the AIRES object library. You can change
+# these names if needed. Take into account that if you do so, then
+# you will need to modify the ".airesrc" file(s) if you want the
+# Aires Runner System to work ok.
+#
+MainName="Aires"
+SryName="AiresSry"
+LibName="libAires.a"
+IDF2ADFName="AiresIDF2ADF"
+MergeName="AiresMerge"
+#
+# Stack size.
+#
+# Specify the total stack size (in Kilobytes). For normal operation, the
+# default value (5,000 KB) will be ok. However, you may need to modify it
+# if your computer has not enough memory, or if you want to work with
+# larger stacks. Enlarging the stacks may improve performance but will
+# increase the size of scratch working files.
+# Do not set the stack size lower than 500 KB.
+# If you do not understand clearly the meaning of this parameter, do not
+# modify it.
+#
+StackSizeInKB=5001
+#
+# Direct I/O parameter.
+#
+# Specify the size (in characters) of the record length unit for direct
+# access files. The FORTRAN 77 standard is 1 character (the default).
+# Some compilers, however, use nonstandard units (For example some DEC FORTRAN
+# compilers.), and therefore this parameter must be modified in some cases.
+# Compilers working under UNIX use (generally?) 1 character unit, so this
+# parameter should not require modifications in these cases.
+# Within subdirectory src/util of the current distribution there is a program
+# (file setreclunit.f) which will evaluate the mentioned unit for the given
+# system. Just compile and run it.
+# If this parameter is set to zero, then the installation software will
+# provide a platform dependent default value (1 for most systems).
+#
+IOReclUnit=0
+#
+# Underscores for routine names.
+#
+# The following parameter is meaningful only when the C interface is enabled,
+# that is, when LoadCInterface=YES.
+# The C intertface routines do call the standard FORTRAN routines included
+# in the AIRES object library. Some FORTRAN compilers append one undescore
+# ("_") to the names of those routines, and therefore the names used in the
+# C calls must be changed accordingly. The installation scripts take care of
+# this feature automatically, but it might happen that the automatic procedure
+# fails to detect the adequate setting in some cases. The following parameter
+# allows to do a manual setting. Put "YES" or "NO" to force appending (not
+# appending) underscores to the C calling statements that involve FORTRAN
+# modules. Leaving a null setting enables the automatic mechanism.
+#
+AppendUnderscores=""
+#
+###############################################################################
+#
+#                       NO MORE THINGS TO CUSTOMIZE.
+#
+###############################################################################
+#
+# Do not place any "exit" instruction here!
+#

@@ -1,0 +1,17 @@
+
+
+    AIRES distribution src/aires directory CONTENTS.txt file.
+
+This directory contains the main programs and subroutines that make the
+main body of AIRES.
+
+All these sources are written in standard FORTRAN 77, using a few extensions
+that are supported by all presently available compilers (to the best of our
+knowledge, of course).
+
+There are no user customizable files here. If you have installation problems
+it is unlikely that they are due to any of the procedures stored within this
+directory. Anyway, if you find something wrong that involves one or more of
+these files, we will very much acknowledge if you inform about the problem
+via electronic mail to sciutto@fisica.unlp.edu.ar.
+

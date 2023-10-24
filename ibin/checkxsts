@@ -1,0 +1,186 @@
+#!/bin/sh
+#
+# ---------
+# checkxsts
+# ---------
+#
+# AIRES installing system internal script.
+#
+# Written by S. J. Sciutto, La Plata 1997, 1998; Rio de Janeiro 2001.
+#
+# Last modification: 12/Jan/2001.
+#
+# Usage:
+#
+#   checkxsts config instlevel xstskn
+#
+# DO NOT MODIFY THIS SCRIPT!
+#
+###############################################################################
+#
+# Setting some constants and configuration variables.
+#
+config=$1
+instlevel=$2
+xstskn=$3
+. ./cfg.tmp
+trap "rm -f $iroot/*.tmp $iroot/*.TMP ; exit" 2
+. $iroot/icfg/compilibfiles
+#
+if [ -f $iroot/xok ]
+then
+  xlev=0
+else
+#
+  df=
+  df_1=
+  df_2=
+  df_3=
+#
+  cd src
+  for dir in $compdirects; do
+#
+    cd $dir
+    tmpvar='*.c'
+    files="$tmpvar"
+#
+    hfiles=
+    if [ "_$files" = "_`echo $tmpvar`" ]
+    then
+      cfiles=
+    else
+      cfiles='*.c'
+      for hfile in *.h; do
+        case $hfile in
+          _*|\*.h) ;;
+          *) hfiles="$hfiles $hfile" ;;
+        esac
+      done
+    fi
+#
+    cofiles=
+    for cofile in *.copt; do
+      case $cofile in
+        \*.copt) ;;
+        *) cofiles="$cofiles $cofile" ;;
+      esac
+    done
+#
+    allfiles="*.f $cfiles $hfiles $cofiles"
+#
+    dfs=TRUE
+    mgc=
+    xversion=
+    if [ -s .xsts ]
+    then
+      set `cat .xsts`
+      if [ $# -ge 3 ]
+      then
+        a=$1
+        b=$2
+        c=$3
+        next=yet
+        for i in $*; do
+          case $next in
+            mgc) mgc="$i"
+                 next=vrs
+            ;;
+            vrs) xversion="$i"
+                 next=end
+            ;;
+            yet) if [ "$i" = "mgc" ]
+                 then
+                   next=mgc
+                 fi
+            ;;
+          esac
+        done
+        aaa="`wc $allfiles | grep -i ' total'`"
+        if [ "_$aaa" = "_" ]
+        then
+          set `wc $allfiles`
+        else
+          set $aaa
+        fi
+        if [ $# -ge 3 -a $1 -eq $a -a $2 -eq $b -a $3 -eq $c ]
+        then
+          dfs=
+        fi
+      fi
+    fi
+    if [ $xversion ]
+    then
+      if [ $xversion != $version -a $xstskn = 1358x ]
+      then
+        echo "xversion src/$dir"
+        exit
+      fi
+    fi
+    if [ $dfs ]
+    then
+      df=TRUE
+      tmpvar="\$${dir}_xdl"
+      eval tmpvar="df_$tmpvar"
+      eval $tmpvar=TRUE
+    fi
+    if [ $mgc ]
+    then
+      for sfile in *.f; do
+        aaa="`grep $mgc $sfile`"
+        if [ "_$aaa" = "_" -a $xstskn = 1358x ]
+        then
+          echo "sfile src/${dir}/$sfile"
+          exit
+        fi
+      done
+      for sfile in $cfiles; do
+        aaa="`grep $mgc $sfile`"
+        if [ "_$aaa" = "_" -a $xstskn = 1358x ]
+        then
+          echo "sfile src/${dir}/$sfile"
+          exit
+        fi
+      done
+    fi
+    cd ..
+  done
+  cd ..
+#
+  if [ $df ]
+  then
+    if [ $df_1 ]
+    then
+      xlev=4
+    elif [ $df_2 ]
+    then
+      xlev=3
+    else
+      xlev=2
+    fi
+  else
+    xlev=1
+  fi
+#
+fi
+#
+case $xlev in
+  0) sts=' ***'
+  ;;
+  1) sts=' **'
+  ;;
+  2) sts=' ++'
+  ;;
+  3) sts=' --'
+  ;;
+  *) sts=' *'
+  ;;
+esac
+if [ $xstskn = 1358x ]
+then
+  echo "$sts"
+fi
+#
+exit
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

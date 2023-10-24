@@ -1,0 +1,40 @@
+#
+# -------
+# generic
+# -------
+#
+# This is a sh script to set some parameters using during the installation of
+# AIRES.
+# Is is "sourced" from other sripts.
+#
+# Written by S. J. Sciutto, La Plata 1997, 1998; Fermilab 1999;
+#                           La Plata 2002; Fermilab 2003; La Plata 2005, 2006.
+#
+# Last modification: 02/Jan/2006.
+#
+###############################################################################
+#
+# "nsimprogs" is a string with the identifications of the simulations
+# programs (excluding the basic one).
+#
+nsimprogs="Q QII"
+#
+# "otherprogs" is a string with the identidication of other main programs
+# (like upgrade programs for example).
+#
+otherprogs="IDF2ADF Merge"
+#
+# Tell the installation program if it is mandatory to replace any existing
+# .airesrc file
+# SubstiteAiresrc contains a list of non-compatible versions, in the
+# format of the "case" command (instances separated by blanks).
+#
+SubstituteAiresrc='1.*.* 2.0.* 2.2.* 2.4.* 2.6.* 2.8.0'
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Do not place any "exit" here!
+#
+###############################################################################
+#

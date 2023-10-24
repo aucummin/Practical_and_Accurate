@@ -1,0 +1,20 @@
+
+
+    AIRES distribution src/extensions1 directory CONTENTS.txt file.
+
+This directory contain routines which contain non-standard FORTRAN 77
+statements whose presence cannot be avoided. For this reason, more
+than one version of the same routines must be programmed and maintained.
+
+"extensions1" contain routines whose code is compatible with FORTRAN
+compilers working in the following environment(s):
+
+             IBM (AIX OS)
+
+There are no user customizable files here. If you want to develop similar
+routines to run under other systems, you should leave these intact, make
+another directory (preferently named "extensionsN" with N a number), and
+code new routines there. If you succeed in doing that for other platforms
+and/or operating systems, or if you want to do that and have problems,
+please contact us via electronic mail to sciutto@fisica.unlp.edu.ar.
+

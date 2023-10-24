@@ -1,0 +1,28 @@
+#
+# File demo1s.inp: Input file included from "demo1.inp"
+#
+#------------------------------------------------------------------------------
+#
+# These are some output control statements.
+#
+LaTeX  # Use this if your printer is a laser printer and you don't like the
+       # appearance of plain text file hard copies.
+#
+StackInfo  # To see stack usage (rather technical stuff).
+OutputListing Full  # More technical stuff.
+#
+TableIndex # Use this directive once, hard copy the resulting listing and
+           # keep it at hand. It is useful for reference.
+#
+# These instructions are for selecting the output data to be printed
+# (or exported). See the document "LearnByExamples.doc"
+#
+PrintTable 1291
+PrintTable 1707
+PrintTable 2207 Opt d
+PrintTable 3001 Opt M
+#
+ExportTable 2793 Opt ML
+ExportTable 5501
+ExportTable 7905
+#

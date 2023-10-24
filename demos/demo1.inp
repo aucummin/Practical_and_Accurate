@@ -1,0 +1,89 @@
+#
+# File demo1.inp: A first example of an AIRES input file.
+#
+#------------------------------------------------------------------------------
+#
+# As you see, all characters following '#' are ignored, as well as blank lines.
+
+# Every AIRES input file is a set of directives. All directives must be placed
+# in a single line, which can have up to 176 characters.
+
+Skip &next
+
+The directive "Skip" skips all text until the label &label is found. Notice
+that it is not equivalent to a "go to" statement since it is not possible to
+skip backwards.
+This statement is useful to introduce plain text in the input files (with no
+need of single line comment '#' characters), as well to skip a part of the
+directives without deleting the lines.
+
+&next
+
+# It is possible to define global variables, either to use them within the
+# input file or to pass parameters to other analysis programs (the
+# defined variables and their contents are stored within the relevant
+# output files and can be retrieved by means of library routines).
+
+SetGlobal Myenergy1  150 MeV
+
+# Remarks will appear in the summary file. The "Remark" directive can be
+# abbreviated and has two alternative forms:
+
+Remark    A FIRST EXAMPLE             # 1.- Single-line remarks.
+
+Rem &eor                              # 2.- Multi-line remarks.
+
+This is a first example of an input file for AIRES.
+There are many things to learn here.
+&eor
+# You can place as many remarks as you want.
+
+# The directives can be placed in any order.
+# The input directives define a "task". Tasks are identified by their
+# task name and (eventually) version. If not defined, the version is zero.
+
+Task demo1  # Use "Task demo1 5" to explicitly set task version to 5.
+
+# The following directives are mandatory (have no default values)
+# Look that TAB characters can also be used in place of blanks.
+
+TotalShowers		3
+PrimaryParticle		proton
+PrimaryEnergy		350 TeV
+
+# All other parameters will be assigned a default value if not set.
+
+RunsPerProcess 3  # You will understand these directives when running
+ShowersPerRun  1  # the program (see the user's manual).
+
+Thinning   50 GeV  # Absolute as well as Relative specifications allowed.
+
+Ground     1000 g/cm2  # Most quantities are specified by two fields:
+                       # "number" and "unit". In this case "unit" can be
+                       # g/cm2, cm, m or km
+#
+# You can freely set the number of observing levels to record the shower
+# longitudinal development. You can define up to 510 observing levels and
+# (optionally) altitude of the highest and lowest levels.
+
+ObservingLevels 41 100 g/cm2 900 g/cm2
+
+# Threshold energies. Particles are not followed below these energies.
+
+GammaCutEnergy     200 keV
+ElectronCutEnergy  200 keV
+MuonCutEnergy        1 MeV
+MesonCutEnergy     1.5 MeV
+NuclCutEnergy      {Myenergy1} # (replacement is 150 MeV).
+
+# IDL allows inclusion of other input files.
+
+Input demo1s.inp
+
+# The remaining directives are in file "demo1s.inp"
+
+End
+
+The file is not scanned beyond an "End" directive.
+
+

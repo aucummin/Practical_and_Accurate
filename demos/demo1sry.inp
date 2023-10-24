@@ -1,0 +1,14 @@
+#
+# File demo1sry.inp: Input file for AiresSry, to be used in connection
+#                    with "demo1.sry"
+#
+#------------------------------------------------------------------------------
+#
+Input demo1.inp # This is to set the task name.
+Summary Off     # Avoid producing a new summary.
+Export Clear    # To cancel previous Export instructions (within "demo1.inp")
+Export 2001     # Example of Table exporting. There are more than 100 tables
+                # available (See the documentations).
+End
+
+#

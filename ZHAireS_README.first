@@ -1,0 +1,123 @@
+
+
+
+           AAAAA    IIII   RRRRRR    EEEEEEE    SSSSS       \
+          AAAAAAA   IIII   RRRRRRR   EEEEEEE   SSSSSSS       A
+          AA   AA    II    RR   RR   EE        SS   SS        I
+          AAAAAAA    II    RRRRRR    EEEE       SSS            R-shower
+          AAAAAAA    II    RRRRR     EEEE         SSS          Extended
+          AA   AA    II    RR  RR    EE        SS   SS         Simulations
+          AA   AA   IIII   RR   RR   EEEEEEE   SSSSSSS         |
+          AA   AA   IIII   RR   RR   EEEEEEE    SSSSS         / \
+
+
+       Departamento de Fisica, Universidad de La Plata, ARGENTINA.
+
+
+ ------------------------------------------------------------------------------
+
+
+This is the README.first file that comes with AIRES distribution.
+
+Last revision: 11/Jul/2002.
+
+
+AIRES (AIRshower Extended Simulations) is a set of programs to simulate and
+analyse the particle showers produced after the incidence of high-energy
+cosmic rays into the Earth's atmosphere.
+
+AIRES is developed by:  S. J. Sciutto
+                        Departamento de Fisica,
+                        Universidad Nacional de La Plata,
+                        C. C. 67 - 1900 La Plata,
+                        Argentina.
+                        E-mail: sciutto@fisica.unlp.edu.ar
+
+The source code is mainly written in FORTRAN, and the total size of all
+modules included in the present distribution is well over 90,000 FORTRAN
+lines. The installed software consists of a main simulation program, a summary
+processing utility, a routine library to manage the output data files and some
+additional auxiliary modules.
+
+
+Availability
+============
+
+AIRES is distributed worldwide as "free software" for all scientists working
+in educational/research non-profit institutions. Users from commercial or
+non-educational institutions must obtain the author's written permission
+before using the software.
+
+AIRES can be dowloaded via Internet (The address of the main AIRES page is:
+http://www.fisica.unlp.edu.ar/auger/aires/). If you already have a copy of
+the program, you should not distribute it; instead, you are strongly
+encouraged to give the previous internet address to all scientists that may be
+interested in this software.
+
+
+Conditions of Use
+=================
+
+Programs and documentation are provided solely for the use of the person/
+organization to which they are distributed, and may not be redistributed or
+reproduced in large numbers without the express agreement of the author. This
+software cannot be sold.
+
+If the programs are modified beyond what is necessary to adapt them to the
+local machine/system environment, it should be made clear in local
+documentation and/or references to the software, that they are locally
+modified versions of the corresponding originals. The author should be
+informed of such modifications, and given the possibility of introducing the
+same modifications in new official versions that may be released in the future.
+If local modifications are so important as to change significantly the
+behaviour of the program(s), the name AIRES should also be changed in order to
+avoid confusion with the original software.
+
+THE AUTHOR WELCOMES COMMENTS CONCERNING THIS SOFTWARE, BUT UNDERTAKES NO
+OBLIGATION FOR ITS MAINTENANCE, NOR RESPONSIBILITY FOR ITS CORRECTNESS, AND
+ACCEPTS NO LIABILITY WHATSOEVER RESULTING FROM ITS USE.
+
+
+NO WARRANTY
+===========
+
+The AIRES system is provided in an "as is" basis, without warranty of any
+kind, either expressed or implied, including, but not limited to, the implied
+warranties of merchantability and fitness for a particular purpose. The entire
+risk as to the quality and performance of the program is with the user. Should
+the program prove defective, the user assumes the cost of all necessary
+servicing, repair or correction. In no event will the AIRES author(s), be
+liable to any user for damages, including any general, special, incidental or
+consequential damages arising out of the use or inability to use the
+Simulation System (including, but not limited to, loss of data or data being
+rendered inaccurate or losses sustained by the user or third parties or a
+failure of the System to operate with any other programs), even if the
+author(s) have been advised of the possibility of such damages.
+
+
+Installing AIRES
+================
+
+To install AIRES in your system you only need to follow the instructions
+given in the file "Install.HowTo" in this directory.
+The current distribution was successfully installed in the following
+platforms/operating systems:
+
+         DEC Alpha    OS: Digital UNIX V
+         DEC Alpha    OS: Linux
+         HP           OS: HP-UX
+         IBM          OS: AIX
+         PC           OS: Linux
+         SGI          OS: IRIX
+         SUN          OS: SunOS
+         SUN          OS: Unix System V
+
+
+Using AIRES
+===========
+
+The "doc" directory contains the available documentation. The "demos"
+directory contains some sample input files that will help to learn by examples
+how to use AIRES.
+
+ ------------------------------------------------------------------------------

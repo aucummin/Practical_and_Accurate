@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# -------
+# mkcmpfi
+# -------
+#
+# AIRES installing system internal script.
+# (Making standard parameter file)
+#
+# Written by S. J. Sciutto, La Plata 1997.
+#
+# Last modification: 14/Aug/1997.
+#
+# Usage:
+#
+#   mkcmpfi file
+#
+# DO NOT MODIFY THIS SCRIPT!
+#
+###############################################################################
+#
+rm -f $1
+echo "      parameter (aires_cdate = 'UNKNOWN')" > $1
+echo "      parameter (aires_cwho  = 'UNKNOWN')" >> $1
+echo "      parameter (aires_cstar = ' ---')" >> $1
+exit
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

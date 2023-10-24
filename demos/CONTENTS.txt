@@ -1,0 +1,6 @@
+
+
+    AIRES distribution demos directory CONTENTS.txt file.
+
+This directory contains some demonstration programs and sample input files,
+to illustrate how the AIRES software can be used.

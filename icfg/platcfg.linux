@@ -1,0 +1,118 @@
+#
+# -------------
+# platcfg.linux
+# -------------
+#
+# This is a sh script to set PC (Linux OS) platform specific settings.
+# Is is "sourced" from other sripts.
+#
+# Written by S. J. Sciutto, La Plata 1998, 2000, 2002, 2005, 2006.
+#
+# Last modification: 12/Dec/2006.
+#
+###############################################################################
+#
+# Settings for Linux PC workstations.
+#
+echo ">>> Configuring environment for installation under Linux"
+#
+# Seeing if the fort command is gfortran, g77, f77 or fort77.
+#
+fcunset=TRUE
+f2ccheck=
+#
+if [ "_$FortCompile" = "_" ]
+then
+#
+  for fcc in gfortran gfortran f77 fort77; do
+    if [ $fcunset ]
+    then
+      set xxx `which $fcc 2>&1`
+      if [ $# -eq 2 ]
+      then
+        fortcommand="$2"
+        fccsel=$fcc
+        fcunset=
+        f2ccheck=TRUE
+      fi
+    fi
+  done
+#
+  if [ $fcunset ]
+  then
+    fortcommand="g77"
+    fccsel="g77"
+    echo
+    echo WARNING. Could not find any FORTRAN compiler.
+    echo Will try with g77 ... with crossed fingers!!
+    echo
+  fi
+#
+else
+  fortcommand=$FortCompile
+  case $FortCompile in
+    *gfortran*) fccsel=gfortran ;;
+    *?77*)      fccsel=g77 ;;
+    *)          fccsel=$fortcommand ;;
+  esac
+fi
+#
+echo "    Selected FORTRAN compiler: $fccsel"
+#
+fortflags="-O2"
+fortno0flags=""
+fortflags0=""
+#
+# Compiler dependent settings.
+#
+defaultsysdepdir="sysdep1"
+#
+case $fccsel in
+#
+  gfortran)
+#
+    specialsysdepdir="ccdaticpu sysdep1g64"
+  ;;
+  *)
+#
+#   Detecting old systems using f2c.
+#
+    if [ $f2ccheck ]
+    then
+      nf2c=`grep -c f2c $fortcommand`
+      if [ $nf2c -gt 0 ]
+      then
+        for fl in fortflags fortno0flags fortflags0; do
+          eval tmp=\$$fl
+          eval ${fl}=\"${tmp} -Nn2048\"
+        done
+        defaultsysdepdir="sysdep1c"
+        specialsysdepdir="daticpu sysdep1"
+        specialsysdepdir="$specialsysdepdir sysspawn sysdep1"
+      fi
+    fi
+  ;;
+esac
+#
+linkcommand="$fortcommand"
+linkflags="-O2"
+linkflags0=""
+linkspecialflags=""
+linkno0flags=""
+ccommand="$fortcommand"
+cflags="-O2"
+nativeflag=""
+diorecunit=1
+defaultextensiondir="extensions1"
+fclibs=""
+cunderscores=TRUE
+arcommand="ar -cr"
+airesrc=linux
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Do not place any "exit" here!
+#
+###############################################################################
+#

@@ -1,0 +1,44 @@
+#
+# -------
+# config0
+# -------
+#
+# AIRES installation system configuration default file.
+#
+# Last modification: 01/May/2003.
+#
+# DO NOT MODIFY THIS FILE!!
+#
+###############################################################################
+#
+Platform=
+AiresRootDir=${HOME}/aires
+AbsoluteBinDir=""
+SetBinLinks=YES
+AbsoluteLibDir=""
+SetLibLinks=YES
+GrdpclesFormat=2
+LgtpclesFormat=4
+EnableThinning=YES
+LoadCInterface=YES
+FortCompile=""     # Fort compile: f77, fort77, ...
+FortFlags=""       # Fortran compilation flags: -O2, ...
+CCompile=""        # C compile: cc, gcc, ...
+CFlags=""          # C compilation flags: -O2, ...
+LoadFlags=""       # Load (link) step flags.
+CompLibs=""        # To include libraries: -L.... -l....
+ArchiveCreate=""   # Archive create: ar -cr, ar cr, ...
+OptimizationLevel=2
+NativeBinaries=NO
+#
+###############################################################################
+#
+MainName="Aires"
+SryName="AiresSry"
+LibName="libAires.a"
+StackSizeInKB=5001
+IOReclUnit=0
+AppendUnderscores=""
+#
+# Do not place any "exit" instruction here!
+#

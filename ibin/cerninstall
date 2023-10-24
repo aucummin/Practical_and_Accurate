@@ -1,0 +1,60 @@
+#!/bin/sh
+#
+# -----------
+# cerninstall
+# -----------
+#
+# AIRES installing system internal script.
+# (Downloading cerntools).
+#
+# Written by S. J. Sciutto, La Plata 1998.
+#
+# Last modification: 28/Oct/1998.
+#
+# Usage:
+#
+#   arinstall config_file install_level
+#
+# DO NOT MODIFY THIS SCRIPT!
+#
+###############################################################################
+#
+config=$1
+instlevel=$2
+. ./cfg.tmp
+#
+if [ $instlevel -le 1 ]
+then
+#
+# Loading cerntools.
+#
+  echo
+  echo ">>> Installing cerntools."
+#
+  cd $airesrootver
+  if [ -f cerntools ]
+  then
+    mv -f cerntools cerntools.bck
+    mkdir cerntools
+  else
+    if [ -d cerntools ]
+    then
+      cd cerntools
+      rm -rf *
+      cd ..
+    else
+      mkdir cerntools
+    fi
+  fi
+#
+  cd cerntools
+  tar -xf $iroot/data/cerntools.tar
+#
+  echo "    Done."
+fi
+cd $iroot
+#
+exit
+#
+###############################################################################
+###############################################################################

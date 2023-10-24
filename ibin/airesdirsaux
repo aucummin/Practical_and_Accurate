@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# ------------
+# airesdirsaux
+# ------------
+#
+# AIRES installing system internal script.
+# (Checking previous versions directories).
+#
+# Written by S. J. Sciutto, La Plata 1997, 1998.
+#
+# Last modification: 14/Oct/1998.
+#
+# Usage:
+#
+#   airesdirsaux
+#
+# DO NOT MODIFY THIS SCRIPT!
+#
+###############################################################################
+#
+dirstr="xyz"
+if [ -f ${HOME}/.airesrc ]
+then
+  . ${HOME}/.airesrc
+  nolinks=TRUE
+  for dir in $Aireshome $Airesbindir $Aireslibdir; do
+    if [ -d $dir ]
+    then
+      cd $dir
+      dirstr="$dirstr `pwd`"
+    else
+      dirstr="$dirstr :xyz:"
+    fi
+  done
+fi
+echo $dirstr
+exit
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

@@ -1,0 +1,701 @@
+#!/bin/sh
+#
+# -------------
+# airescompilib
+# -------------
+#
+# AIRES installing system internal script.
+# (Compiling the Aires simulation system.)
+#
+# Written by S. J. Sciutto, La Plata 1997, 1998; Fermilab 1999;
+#                           La Plata 2000, 2001, 2002, 2003.
+#
+# Last modification: 19/Aug/2003.
+#
+# Usage:
+#
+#   airescompilib config_file install_level [-d dirlist]
+#
+# DO NOT MODIFY THIS SCRIPT!
+#
+###############################################################################
+#
+# Setting some constants and configuration variables.
+#
+config=$1
+instlevel=$2
+if [ "_$3" = "_-d" ]
+then
+  shift; shift; shift
+  dirlist="$*"
+else
+  dirlist=
+fi
+#
+. ./cfg.tmp
+#
+fortcompile="$fortcommand $fortflags $nativeflag -c"
+fortcompile0="$fortcommand $fortflags0 -c"
+ccompile="$ccommand $cflags -c"
+linkmain="$linkcommand $linkflags $nativeflag -o ${bindir0}/$MainName"
+linkmaino="$linkcommand $linkflags $nativeflag -o"
+echo "first parts://///////////////////////////////////////////////"
+echo "$linkcommand" 
+echo "XXXXXXXXXXXXXXXXXX"
+echo "$linkflags"
+echo "XXXXXXXXXXXXXXXXXX"
+echo "$nativeflag"
+echo "XXXXXXXXXXXXXXXXXX"
+echo "${bindir0}/$MainName"
+echo "XXXXXXXXXXXXXXXXXX"
+
+linksry="$linkcommand $linkflags $nativeflag -o ${bindir0}/$SryName"
+#
+cmpfi="$iroot/src/aires/_cdate.f"
+specfi="$iroot/src/aires/_stackspec.f"
+ciofi="$iroot/src/aires/_ciofiles.f"
+cunfi="$iroot/src/cinterface/_fexten.h"
+#
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Setting directories and files within it
+#
+if [ ! -f $iroot/icfg/compilibfiles ]
+then
+  echo Missing internal compilation configuration file icfg/compilibfiles.
+  echo Installation aborted.
+  rm -f $iroot/cfg.tmp
+  exit
+fi
+. $iroot/icfg/compilibfiles
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# PROCESSING THE COMPILE AND LINK STEPS.
+#
+case $instlevel in
+#
+  0|1|2) # Compile, link and makelib alltogether.
+     docompile=TRUE
+     if [ "_$dirlist" != "_" ]
+     then
+       compidirs="$dirlist"
+     else
+       compidirs=ALL
+     fi
+     dobinary=TRUE
+     dolib=TRUE
+     doobinary=TRUE
+  ;;
+#
+  3) # Only link simulation/summary programs
+     # We must first check if there were no parameter changes.
+     #
+     ok1="`${iroot}/ibin/checklastpar StackSizeInKB $StackSizeInKB $iroot`"
+     ok2="`${iroot}/ibin/checklastpar diorecunit $diorecunit $iroot`"
+     ok3="`${iroot}/ibin/checklastpar grdpclesenable $grdpclesenable $iroot`"
+     ok4="`${iroot}/ibin/checklastpar lgtpclesenable $lgtpclesenable $iroot`"
+     ok5="`${iroot}/ibin/checklastpar thinningenable $thinningenable $iroot`"
+     ok6="`${iroot}/ibin/checklastpar fortflags "_$fortflags" $iroot`"
+     ok7="`${iroot}/ibin/checklastpar nativeflags "_$nativeflags" $iroot`"
+     #
+     if [ "$ok1" = "OK" -a "$ok2" = "OK" -a \
+          "$ok3" = "OK" -a "$ok4" = "OK" -a \
+          "$ok5" = "OK" -a "$ok6" = "OK" -a "$ok7" = "OK" ]
+     then
+       docompile=
+     else
+       echo
+       echo --- It is necessary to compile before making the executable \
+            binaries.
+       echo --- Compile step will be forced to be executed.
+       echo
+       docompile=TRUE
+       compidirs=ALL
+     fi
+     dobinary=TRUE
+     dolib=
+     doobinary=
+  ;;
+#
+  4) # Only make libraries.
+     # We must first check if there were no parameter changes.
+     #
+     ok1="`${iroot}/ibin/checklastpar \
+           cinterfaceflag "_$cinterfaceflag" $iroot`"
+     ok5="`${iroot}/ibin/checklastpar fortflags "_$fortflags" $iroot`"
+     ok6="`${iroot}/ibin/checklastpar nativeflags "_$nativeflags" $iroot`"
+     #
+     if [ "$ok1" = "OK" -a "$ok5" = "OK" -a "$ok6" = "OK" ]
+     then
+       docompile=
+     else
+       echo
+       echo --- It is necessary to compile before making the object library.
+       echo --- Compile step will be forced to be executed.
+       echo
+       docompile=TRUE
+       compidirs=ALL
+     fi
+     dobinary=
+     dolib=TRUE
+     doobinary=
+  ;;
+#
+  5) # Only link other programs
+     # We must first check if there were no parameter changes.
+     #
+     ok1="`${iroot}/ibin/checklastpar StackSizeInKB $StackSizeInKB $iroot`"
+     ok2="`${iroot}/ibin/checklastpar diorecunit $diorecunit $iroot`"
+     ok3="`${iroot}/ibin/checklastpar grdpclesenable $grdpclesenable $iroot`"
+     ok4="`${iroot}/ibin/checklastpar lgtpclesenable $lgtpclesenable $iroot`"
+     ok5="`${iroot}/ibin/checklastpar thinningenable $thinningenable $iroot`"
+     ok6="`${iroot}/ibin/checklastpar fortflags "_$fortflags" $iroot`"
+     ok7="`${iroot}/ibin/checklastpar nativeflags "_$nativeflags" $iroot`"
+     #
+     if [ "$ok1" = "OK" -a "$ok2" = "OK" -a \
+          "$ok3" = "OK" -a "$ok4" = "OK" -a \
+          "$ok5" = "OK" -a "$ok6" = "OK" -a "$ok7" = "OK" ]
+     then
+       docompile=
+     else
+       echo
+       echo --- It is necessary to compile before making the executable \
+            binaries.
+       echo --- Compile step will be forced to be executed.
+       echo
+       docompile=TRUE
+       compidirs=ALL
+     fi
+     dobinary=
+     dolib=
+     doobinary=TRUE
+  ;;
+  *)
+     echo Invalid compile level $instlevel.
+     echo Installation aborted.
+     rm -f $iroot/cfg.tmp
+     exit
+  ;;
+esac
+#
+if [ $docompile ]
+then
+#
+#   COMPILING.
+#
+  echo
+  echo ">>> COMPILING THE SOURCES."
+  echo
+  echo "    NOTE: Some compilers may eventually issue warning messages when"
+  echo "    compiling certain modules. Such warning messages do not affect"
+  echo "    the final executable program(s) and can therefore be ignored."
+  echo
+#
+  year=`date +%y`
+  if [ $year -lt 100 ]
+  then
+    if [ $year -ge 90 ]
+    then
+      year="19$year"
+    else
+      year="20$year"
+    fi
+  fi
+#
+  if [ $LOGNAME ]
+  then
+    maildir="$LOGNAME"
+  elif [ $USER ]
+  then
+    maildir="$USER"
+  elif [ $USERNAME ]
+  then
+    maildir="$USERNAME"
+  else
+    maildir="`logname`"
+  fi
+  if [ ! $maildir ]
+  then
+    maildir="UNKNOWN"
+  fi
+  if [ $HOST ]
+  then
+    host=$HOST
+  elif [ $HOSTNAME ]
+  then
+    host=$HOSTNAME
+  else
+    host="`hostname`"
+  fi
+  if [ $host ]
+  then
+    maildir="${maildir}@${host}"
+  fi
+  rm -f $cmpfi
+  rm -f $specfi
+  rm -f $ciofi
+  xsts="`$iroot/ibin/checkxsts $config $instlevel 1358x`"
+  set zzz $xsts
+  case $2 in
+    xversion)
+      echo "    In source directory ${3}."
+      echo "    There are missing or improperly modified files."
+      echo "    Installation aborted."
+      $iroot/ibin/mkcmpfi $cmpfi
+      rm -f $iroot/cfg.tmp*
+      exit
+    ;;
+    sfile)
+      echo "    Missing or improperly modified source file: ${3}."
+      echo "    Installation aborted."
+      $iroot/ibin/mkcmpfi $cmpfi
+      rm -f $iroot/cfg.tmp*
+      exit
+    ;;
+  esac
+#
+  cd $iroot/src
+#
+# Renaming cfg.tmp temporarily
+#
+  mv $iroot/cfg.tmp $iroot/cfg.tmpP
+#
+  echo "->  Entering directory `pwd`"
+  echo
+#
+#
+  echo "      parameter (aires_cdate = '`date +%d/%h`/${year}')" > $cmpfi
+  echo "      parameter (aires_cwho  = '${maildir}')" >> $cmpfi
+  echo "      parameter (aires_cstar = '${xsts}')" >> $cmpfi
+#
+  echo "      parameter (stackb     = ${StackSizeInKB})" > $specfi
+  echo "      parameter (ioreclunit = ${diorecunit})"    >> $specfi
+#
+  echo "      parameter (cioenable_grdpcles  = ${grdpclesenable})" > $ciofi
+  echo "      parameter (cioenable_lgtpcles  = ${lgtpclesenable})" >> $ciofi
+  echo "      parameter (cioenable_pcletrace = ${grdpclesenable})" >> $ciofi
+#
+  if [ "_$cinterfaceflag" != "_FALSE" ]
+  then
+    rm -f $cunfi
+    if [ "_$cunderscores"  = "_TRUE" ]
+    then
+      echo "#define FUNDERSCORE _" > $cunfi
+    else
+      echo "#define FUNDERSCORE N" > $cunfi
+    fi
+  fi
+#
+  if [ "_$compidirs" = "_ALL" ]
+  then
+    compidirs="$compdirects"
+  fi
+#
+  for dir in $compidirs; do
+    cd $dir
+    echo ">-> Entering directory `pwd`"
+    echo
+#
+#AUSTIN EDIT MAY FUCK STUFF UP
+#    rm -f *.o
+    tmpvar="\$${dir}_compf"
+    eval files="$tmpvar"
+    
+    echo "$tmpvar"
+    
+    echo "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
+#
+    for ffile in $files; do
+      if [ -f ${ffile}.f ]
+      then
+        if [ -f ${ffile}.copt ]
+        then
+          . ./${ffile}.copt
+          case $Compile in
+            Normal) thiscomp="$fortcompile"
+              ;;
+            Opt0)   thiscomp="$fortcompile0"
+              ;;
+            NoOpt)  thiscomp="$fortcommand"
+              ;;
+            NoOpt0) thiscomp="$fortcommand0"
+              ;;
+            *)      thiscomp="$Compile"
+              ;;
+          esac
+        else
+          thiscomp="$fortcompile"
+        fi
+        echo "--- Compiling ${ffile}.f"
+        $thiscomp ${ffile}.f
+        if [ $? -ne 0 ]
+        then
+          echo "    Nonzero return code from $thiscomp ${ffile}.f"
+          echo
+          echo "    RETRYING."
+#
+          rm -f core
+          $fortcompile0 ${ffile}.f
+          if [ $? -ne 0 ]
+          then
+            echo "    Nonzero return code from $fortcompile0 ${ffile}.f"
+            echo "    Stopping execution."
+            $iroot/ibin/mkcmpfi $cmpfi
+            rm -f $iroot/cfg.tmp* core
+            exit
+          elif [ ! -f ${ffile}.o ]
+          then
+            echo "    Object file ${ffile}.o not found"
+            echo "    Stopping execution."
+            $iroot/ibin/mkcmpfi $cmpfi
+            rm -f $iroot/cfg.tmp*
+            exit
+          else
+            echo "    Second trial successful."
+            echo
+          fi
+        elif [ ! -f ${ffile}.o ]
+        then
+          echo "    Object file ${ffile}.o not found"
+          echo "    Stopping execution."
+          $iroot/ibin/mkcmpfi $cmpfi
+          rm -f $iroot/cfg.tmp* core
+          exit
+        fi
+      else
+        echo "    Source file ${ffile}.f not found."
+        echo "    Stopping execution."
+        $iroot/ibin/mkcmpfi $cmpfi
+        rm -f $iroot/cfg.tmp*
+        exit
+      fi
+    done
+#
+    tmpvar="\$${dir}_compc"
+    eval files=$tmpvar
+#
+    for cfile in $files; do
+      if [ -f ${cfile}.c ]
+      then
+        if [ -f ${cfile}.copt ]
+        then
+          . ./${cfile}.copt
+          case $Compile in
+            Normal|Opt0)  thiscomp="$ccompile"
+              ;;
+            NoOpt|NoOpt0) thiscomp="$ccommand"
+              ;;
+            *)            thiscomp="$Compile"
+              ;;
+          esac
+        else
+          thiscomp="$ccompile"
+        fi
+        echo "--- Compiling ${cfile}.c"
+        $thiscomp ${cfile}.c
+        if [ $? -ne 0 ]
+        then
+          echo "    Nonzero return code from $thiscomp ${cfile}.c"
+          echo "    Stopping execution."
+#
+          $iroot/ibin/mkcmpfi $cmpfi
+          rm -f $iroot/cfg.tmp* core
+          exit
+        elif [ ! -f ${cfile}.o ]
+        then
+          echo "    Object file ${cfile}.o not found"
+          echo "    Stopping execution."
+          $iroot/ibin/mkcmpfi $cmpfi
+          rm -f $iroot/cfg.tmp* core
+          exit
+        fi
+      else
+        echo "    Source file ${cfile}.c not found."
+        echo "    Stopping execution."
+        $iroot/ibin/mkcmpfi $cmpfi
+        rm -f $iroot/cfg.tmp*
+        exit
+      fi
+    done
+#
+    echo
+    echo "<-< Leaving directory `pwd`"
+    cd ..
+#
+  done
+  echo
+  echo "<-  Leaving directory `pwd`"
+  echo "**  No more files to compile."
+#
+  $iroot/ibin/mkcmpfi $cmpfi
+#
+# Renaming cfg.tmpP back to the corresponding name.
+#
+  mv $iroot/cfg.tmpP $iroot/cfg.tmp
+#
+fi
+#
+if [ $dobinary ]
+then
+#
+#   MAKING THE MAIN EXECUTABLE BINARIES.
+#
+  echo
+  echo ">>> MAKING THE MAIN EXECUTABLE BINARIES."
+#
+  cd $iroot/src
+#
+#   Preparing files for linking only.
+#
+  echo
+  echo "*** Simulation program ${MainName}."
+#
+  allfiles=""
+#
+  for dir in $maindirects; do
+#
+    tmpvar="\$${dir}_mainf"
+    eval files="$tmpvar"
+#
+    for ffile in $files; do
+     allfiles="$allfiles ${dir}/${ffile}.o"
+    done
+#
+    tmpvar="\$${dir}_mainc"
+    eval files=$tmpvar
+#
+    for cfile in $files; do
+      allfiles="$allfiles ${dir}/${cfile}.o"
+    done
+#
+  done
+#
+  allfiles="$allfiles aires/grid.o"
+  allfiles="$allfiles aires/Cpp_GridMaker_2.o"
+
+  $linkcommand $linkflags $nativeflag $allfiles -lstdc++ -lgfortran -o ${bindir0}/$MainName $fclibs
+  echo "$linkcommand $linkflags $nativeflag $allfiles -lstdc++ -lgfortran -o ${bindir0}/$MainName $fclibs"
+  echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+#  $linkmain $allfiles  $fclibs
+  if [ $? -ne 0 ]
+  then
+    echo "  Link step concluded with nonzero return code."
+    echo "  Stopping execution."
+    rm -f $iroot/cfg.tmp*
+    exit
+  fi
+  echo "    Done."
+#
+  for prog in $nsimprogs; do
+#
+    tmpvar="\$MainName${prog}"
+    eval othermain="$tmpvar"
+    echo
+    echo "*** Simulation program ${othermain}."
+#
+    allfiles=""
+    tmpdir="\$maindirects${prog}"
+    eval tmpdir=\"$tmpdir\"
+#
+    for dir in $tmpdir; do
+#
+      tmpvar="\$${dir}_main${prog}f"
+      eval files=\"$tmpvar\"
+#
+      for ffile in $files; do
+       allfiles="$allfiles ${dir}/${ffile}.o"
+      done
+#
+      tmpvar="\$${dir}_main${prog}c"
+      eval files=\"$tmpvar\"
+#
+      for cfile in $files; do
+        allfiles="$allfiles ${dir}/${cfile}.o"
+      done
+# 
+    done
+#
+
+  allfiles="$allfiles aires/grid.o"
+  allfiles="$allfiles aires/Cpp_GridMaker_2.o"
+
+    rm -f ${bindir0}/$othermain
+
+    $linkcommand $linkflags $nativeflag $allfiles -lstdc++ -lgfortran -o ${bindir0}/$othermain $fclibs
+    echo "$linkcommand $linkflags $nativeflag $allfiles -lstdc++ -lgfortran -o ${bindir0}/$othermain $fclibs"
+    echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+ #   $linkmaino ${bindir0}/$othermain $allfiles -lstdc++ -lgfortran $fclibs
+    if [ $? -ne 0 ]
+    then
+      echo "  Link step concluded with nonzero return code."
+      echo "  Stopping execution."
+      rm -f $iroot/cfg.tmp*
+      exit
+    fi
+    echo "    Done here."
+  done
+#
+  echo
+  echo "*** Summary program: ${SryName}."
+#
+  allfiles=""
+#
+  for dir in $srydirects; do
+#
+    tmpvar="\$${dir}_sryf"
+    eval files="$tmpvar"
+#
+    for ffile in $files; do
+     allfiles="$allfiles ${dir}/${ffile}.o"
+    done
+#
+    tmpvar="\$${dir}_sryc"
+    eval files=$tmpvar
+#
+    for cfile in $files; do
+      allfiles="$allfiles ${dir}/${cfile}.o"
+    done
+#
+  done
+#
+  rm -f ${bindir0}/$SryName
+  $linksry $allfiles $fclibs
+  echo "$linksry $allfiles $fclibs"
+  echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  if [ $? -ne 0 ]
+  then
+    echo "  Link step concluded with nonzero return code."
+    echo "  Stopping execution."
+    rm -f $iroot/cfg.tmp*
+    exit
+  fi
+  echo "    Done."
+#
+fi
+#
+if [ $dolib ]
+then
+#
+#   MAKING THE AIRES OBJECT LIBRARY
+#
+  echo
+  echo ">>> MAKING THE OBJECT LIBRARY ($LibName)."
+#
+  if [ "_$cinterfaceflag" != "_FALSE" ]
+  then
+    echo "    (AIRES C-FORTRAN interface modules also included)."
+  fi
+#
+  cd $iroot/src
+  echo
+#
+#   Preparing files for archiving
+#
+  allfiles=""
+#
+  for dir in $libdirects; do
+#
+    tmpvar="\$${dir}_libf"
+    eval files="$tmpvar"
+#
+    for ffile in $files; do
+     allfiles="$allfiles ${dir}/${ffile}.o"
+    done
+#
+    tmpvar="\$${dir}_libc"
+    eval files=$tmpvar
+#
+    for cfile in $files; do
+      allfiles="$allfiles ${dir}/${cfile}.o"
+    done
+#
+  done
+#
+  rm -f $libdir0/$LibName
+  $arcommand $libdir0/$LibName $allfiles
+  if [ $? -ne 0 ]
+  then
+    echo "  Archiving step concluded with nonzero return code."
+    echo "  Stopping execution."
+    rm -f $iroot/cfg.tmp*
+    exit
+  fi
+  echo "    Done."
+fi
+#
+if [ $doobinary ]
+then
+#
+#   MAKING THE OTHER EXECUTABLE BINARIES.
+#
+  echo
+  echo ">>> MAKING OTHER EXECUTABLE BINARIES."
+#
+  cd $iroot/src
+#
+  for prog in $otherprogs; do
+#
+    tmpvar="\$${prog}Name"
+    eval othermain="$tmpvar"
+    echo
+    echo "*** $prog program: ${othermain}."
+#
+    allfiles=""
+    tmpdir="\$other${prog}directs"
+    eval tmpdir=\"$tmpdir\"
+#
+    for dir in $tmpdir; do
+#
+      tmpvar="\$${dir}_other${prog}f"
+      eval files=\"$tmpvar\"
+#
+      for ffile in $files; do
+       allfiles="$allfiles ${dir}/${ffile}.o"
+      done
+#
+      tmpvar="\$${dir}_other${prog}c"
+      eval files=\"$tmpvar\"
+#
+      for cfile in $files; do
+        allfiles="$allfiles ${dir}/${cfile}.o"
+      done
+#
+    done
+#
+    tmpvar="\$uselibrary_other${prog}"
+    eval uselib=$tmpvar
+    if [ $uselib ]
+    then
+      lname=`basename ${LibName#lib} .a`
+      oplibs="-L$libdir0 -l$lname"
+    else
+      oplibs=
+    fi
+#
+    rm -f ${bindir0}/$othermain
+    $linkmaino ${bindir0}/$othermain $allfiles $oplibs $fclibs
+    if [ $? -ne 0 ]
+    then
+      echo "  Link step concluded with nonzero return code."
+      echo "  Stopping execution."
+      rm -f $iroot/cfg.tmp*
+      exit
+    fi
+    echo "    Done."
+  done
+fi
+#
+# End of processing.
+#
+if [ $instlevel -le 1 ]
+then
+  echo
+  echo ">>> Compilation process completed."
+fi
+cd $iroot
+exit
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

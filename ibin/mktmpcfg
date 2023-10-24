@@ -1,0 +1,579 @@
+#!/bin/sh
+#
+# --------
+# mktmpcfg
+# --------
+#
+# AIRES installing system internal script.
+#
+# Written by S. J. Sciutto, La Plata 1997, 1998; Fermilab 1999;
+#                           La Plata 2000, 2003, 2005.
+#
+# Last modification: 22/Mar/2005.
+#
+# Usage:
+#
+#   mktmpcfg config_file
+#
+# DO NOT MODIFY THIS SCRIPT!
+#
+###############################################################################
+#
+config=$1
+#
+# Loading current configuration.
+#
+. ./icfg/config0
+. $config
+. ./icfg/generic
+#
+# Preparing installation temporary file.
+#
+rm -f cfg.tmp
+echo "#" > cfg.tmp
+echo "# AIRES internal configuration file. DO NOT EDIT!" >> cfg.tmp
+echo "#" >> cfg.tmp
+echo "# File automatically created on date: `date`" >> cfg.tmp
+echo "#" >> cfg.tmp
+#
+# Installation root directory.
+#
+echo "iroot=`pwd`" >> cfg.tmp
+#
+# Checking Platform.
+#
+case "_$Platform" in
+#
+  _DECAlpha)   # Digital Alpha workstations.
+    platc=dec
+  ;;
+#
+  _HP)         # HP workstations.
+    platc=hp
+  ;;
+#
+  _IBM)        # IBM workstations (AIX OS).
+    platc=ibm
+  ;;
+#
+  _Linux)      # PC with linux OS.
+    platc=linux
+  ;;
+  _LxOld)      # PC with old versions of Linux.
+    platc=lxold
+  ;;
+#
+  _LxAlpha)    # DEC Alpha with linux OS.
+    platc=lxalpha
+  ;;
+#
+  _SGI)        # Silicon Graphics workstations.
+    platc=sgi
+  ;;
+#
+  _SUN)        # SUN workstations with SunOS operating system.
+    platc=sun
+  ;;
+#
+  _SUN5)       # SUN workstations with UNIX System V OS.
+    platc=sun5
+  ;;
+#
+  *)           # Unknown platform.
+    echo Unknown platform \"$Platform\".
+    echo Installation aborted.
+    rm -f cfg.tmp
+    exit
+  ;;
+esac
+#
+# Running the platform specific configuration script.
+#
+if [ -f ./icfg/platcfg.$platc ]
+then
+  . ./icfg/platcfg.$platc
+else
+  echo Cannot find configuration file for platform \"$Platform\".
+  echo Installation aborted.
+  rm -f cfg.tmp
+  exit
+fi
+#
+# Checking compile time selection switchs.
+#
+case "_$GrdpclesFormat" in
+#
+  _1) grdpclesenable=1
+  ;;
+  _2) grdpclesenable=2
+  ;;
+  _3) grdpclesenable=3
+  ;;
+  *)  grdpclesenable=1
+      echo --- Invalid value for GrdpclesFormat: $GrdpclesFormat
+      echo --- Substituting by 1.
+  ;;
+esac
+#
+case "_$LgtpclesFormat" in
+#
+  _0) lgtpclesenable=0
+  ;;
+  _1) lgtpclesenable=1
+  ;;
+  _2) lgtpclesenable=2
+  ;;
+  _3) lgtpclesenable=3
+  ;;
+  _4) lgtpclesenable=4
+  ;;
+  _5) lgtpclesenable=5
+  ;;
+  *)  lgtpclesenable=1
+      echo --- Invalid value for LgtpclesFormat: $LgtpclesFormat
+      echo --- Substituting by 1.
+  ;;
+esac
+#
+if [ "_$EnableThinning" = "_NO" -o "_$EnableThinning" = "_No" -o \
+     "_$EnableThinning" = "_NOT" -o "_$LoadCInterface" = "_Not" -o \
+     "_$EnableThinning" = "_N" -o "_$LoadCInterface" = "_n" ]
+then
+  thinningenable=0
+else
+  thinningenable=1
+fi
+#
+if [ "_$LoadCInterface" = "_YES" -o "_$LoadCInterface" = "_Yes" -o \
+     "_$LoadCInterface" = "_Y" -o "_$LoadCInterface" = "_y" ]
+then
+  cinterfaceflag=TRUE
+else
+  cinterfaceflag=FALSE
+fi
+#
+if [ "_$AppendUnderscores" = "_YES" -o "_$AppendUnderscores" = "_Yes" -o \
+     "_$AppendUnderscores" = "_Y" -o "_$AppendUnderscores" = "_y" ]
+then
+  cunderscores=TRUE
+elif [ "_$AppendUnderscores" != "_" ]
+then
+  cunderscores=FALSE
+fi
+#
+# Selection switchs to the tmp file ...
+#
+echo "grdpclesenable=\"$grdpclesenable\"" >> cfg.tmp
+echo "lgtpclesenable=\"$lgtpclesenable\"" >> cfg.tmp
+echo "thinningenable=\"$thinningenable\"" >> cfg.tmp
+echo "cinterfaceflag=\"$cinterfaceflag\"" >> cfg.tmp
+echo "cunderscores=\"$cunderscores\""     >> cfg.tmp
+#
+# Checking manually entered commands.
+#
+if [ "_$FortCompile" != "_" ]
+then
+  fortcommand="$FortCompile"
+  linkcommand="$FortCompile"
+fi
+if [ "_$OptimizationLevel" != "_2" ]
+then
+  fortflags="$fortflags0"
+fi
+if [ "_$FortFlags" != "_" ]
+then
+  set Dummy $FortFlags
+  shift
+  if [ "_$1" = "_+++" ]
+  then
+    shift
+    fortflags="$fortflags $*"
+    set -f
+    for flag in $*; do
+      f0f=TRUE
+      for fcase in O O? ?O ?O? $fortno0flags; do
+        case $flag in
+        ${fcase}) f0f= ;;
+        esac
+      done
+      if [ $f0f ]
+      then
+        fortflags0="$fortflags0 $flag"
+      fi
+    done
+    set +f
+  else
+    fortflags="$FortFlags"
+  fi
+fi
+if [ "_$fortspecialflags" != "_" ]
+then
+  for flag in $fortspecialflags; do
+    isflag=
+    for sflag in $fortflags; do
+       if [ "$flag" = "$sflag" ]
+       then
+         isflag=TRUE
+       fi
+    done
+    if [ $isflag ]
+    then
+      isflag0=FALSE
+      for sflag in $fortflags0; do
+         if [ "$flag" = "$sflag" ]
+         then
+           isflag0=
+         fi
+      done
+      if [ $isflag0 ]
+      then
+        fortflags0="$fortflags0 $flag"
+      fi
+    fi
+  done
+fi
+if [ "_$CCompile" != "_" ]
+then
+  ccommand="$CCompile"
+fi
+if [ "_$CFlags" != "_" ]
+then
+  set Dummy $CFlags
+  shift
+  if [ "_$1" = "_+++" ]
+  then
+    shift
+    cflags="$cflags $*"
+  else
+    cflags="$CFlags"
+  fi
+fi
+if [ "_$OptimizationLevel" != "_2" ]
+then
+  linkflags="$linkflags0"
+fi
+if [ "_$LoadFlags" != "_" ]
+then
+  set Dummy $LoadFlags
+  shift
+  if [ "_$1" = "_+++" ]
+  then
+    shift
+    linkflags="$linkflags $*"
+    set -f
+    for flag in $*; do
+      f0f=TRUE
+      for fcase in O O? ?O ?O? $linkno0flags; do
+        case $flag in
+        ${fcase}) f0f= ;;
+        esac
+      done
+      if [ $f0f ]
+      then
+        linkflags0="$linkflags0 $flag"
+      fi
+    done
+    set +f
+  else
+    linkflags="$LoadFlags"
+  fi
+fi
+if [ "_$linkspecialflags" != "_" ]
+then
+  for flag in $linkspecialflags; do
+    isflag=
+    for sflag in $linkflags; do
+       if [ "$flag" = "$sflag" ]
+       then
+         isflag=TRUE
+       fi
+    done
+    if [ $isflag ]
+    then
+      isflag0=FALSE
+      for sflag in $linkflags0; do
+         if [ "$flag" = "$sflag" ]
+         then
+           isflag0=
+         fi
+      done
+      if [ $isflag0 ]
+      then
+        linkflags0="$linkflags0 $flag"
+      fi
+    fi
+  done
+fi
+if [ "_$CompLibs" != "_" ]
+then
+  set Dummy $CompLibs
+  shift
+  if [ "_$1" = "_+++" ]
+  then
+    shift
+    fclibs="$fclibs $*"
+  else
+    fclibs="$CompLibs"
+  fi
+fi
+if [ "_$ArchiveCreate" != "_" ]
+then
+  arcommand="$ArchiveCreate"
+fi
+#
+if [ "_$NativeBinaries" = "_NO" -o "_$NativeBinaries" = "_No" -o \
+     "_$NativeBinaries" = "_NOT" -o "_$NativeBinaries" = "_Not" -o \
+     "_$NativeBinaries" = "_N" -o "_$NativeBinaries" = "_n" ]
+then
+  nativeflag=
+fi
+#
+# Checking the compile and link commands.
+#
+if [ ! -x $fortcommand ]
+then
+  set `which $fortcommand`
+  if [ $# -eq 1 ]
+  then
+    fortcommand="$1"
+  fi
+fi
+if [ ! -x $ccommand ]
+then
+  set `which $ccommand`
+  if [ $# -eq 1 ]
+  then
+    ccommand="$1"
+  fi
+fi
+if [ ! -x $linkcommand ]
+then
+  set `which $linkcommand`
+  if [ $# -eq 1 ]
+  then
+    linkcommand="$1"
+  fi
+fi
+#
+# To the tmp file ...
+#
+echo "fortcommand=\"$fortcommand\"" >> cfg.tmp
+echo "fortflags=\"$fortflags\"" >> cfg.tmp
+echo "fortflags0=\"$fortflags0\"" >> cfg.tmp
+echo "linkcommand=\"$linkcommand\"" >> cfg.tmp
+echo "linkflags=\"$linkflags\"" >> cfg.tmp
+echo "ccommand=\"$ccommand\"" >> cfg.tmp
+echo "cflags=\"$cflags\"" >> cfg.tmp
+echo "nativeflag=\"$nativeflag\"" >> cfg.tmp
+echo "defaultextensiondir=\"$defaultextensiondir\"" >> cfg.tmp
+echo "specialextensiondir=\"$specialextensiondir\"" >> cfg.tmp
+echo "defaultsysdepdir=\"$defaultsysdepdir\"" >> cfg.tmp
+echo "specialsysdepdir=\"$specialsysdepdir\"" >> cfg.tmp
+echo "fclibs=\"$fclibs\"" >> cfg.tmp
+echo "arcommand=\"$arcommand\"" >> cfg.tmp
+echo "airesrc=\"$airesrc\"" >> cfg.tmp
+#
+# Checking other compilation parameters.
+#
+if [ $StackSizeInKB -lt 450 ]
+then
+  echo Too low value for stack size: $StackSizeInKB KB.
+  echo Installation aborted.
+  rm -f cfg.tmp
+  exit
+elif [ $StackSizeInKB -gt 40000 ]
+then
+  echo "Too high value for stack size: $StackSizeInKB KB > 40 MB!"
+  echo Installation aborted.
+  rm -f cfg.tmp
+  exit
+fi
+echo "StackSizeInKB=$StackSizeInKB" >> cfg.tmp
+#
+if [ "_$diorecunit" = "_" ]
+then
+  diorecunit=1
+fi
+if [ "_$IOReclUnit" != "_" ]
+then
+  if [ $IOReclUnit -ne 0 ]
+  then
+    diorecunit=$IOReclUnit
+  fi
+fi
+echo "diorecunit=$diorecunit" >> cfg.tmp
+#
+# Directories and file names.
+#
+case "_$AiresRootDir" in
+  _) 
+     echo The AIRES root directory is the null string
+     echo Installation aborted.
+     rm -f cfg.tmp
+     exit
+  ;;
+  _/*) # Absolute specification OK.
+  ;;
+  *) # Non absoulte specification.
+     echo Relative directory specifications not accepted. Use absolute ones.
+     echo "(AiresRootDir=$AiresRootDir)"
+     echo Installation aborted.
+     rm -f cfg.tmp
+     exit
+  ;;
+esac
+set `cat ./icfg/version`
+vr1=$1
+vr2=$2
+vr3=$3
+version="${vr1}-${vr2}-${vr3}"
+versionp="${vr1}.${vr2}.${vr3}"
+version0="${vr1}${vr2}${vr3}"
+echo "vr1=$vr1" >> cfg.tmp
+echo "vr2=$vr2" >> cfg.tmp
+echo "vr3=$vr3" >> cfg.tmp
+echo "version=$version" >> cfg.tmp
+echo "versionp=$versionp" >> cfg.tmp
+echo "version0=$version0" >> cfg.tmp
+echo "airesroot=\"$AiresRootDir\"" >> cfg.tmp
+echo "airesrootver=\"${AiresRootDir}/${version}\"" >> cfg.tmp
+#
+case "_$AbsoluteBinDir" in
+  _)
+    bindir0="$AiresRootDir/$version/bin"
+    bindir1="$AiresRootDir/bin"
+    bindir2="$bindir1"
+    binlink=0
+  ;;
+  _/*)
+    if [ "_$SetBinLinks" = "_NO" -o "_$SetBinLinks" = "_No" -o \
+         "_$SetBinLinks" = "_NOT" -o "_$SetBinLinks" = "_Not" -o \
+         "_$SetBinLinks" = "_N" -o "_$SetBinLinks" = "N" ]
+    then
+      bindir0="$AbsoluteBinDir"
+      bindir1="$bindir0"
+      bindir2="$bindir0"
+      binlink=1
+    else
+      bindir0="$AiresRootDir/$version/bin"
+      bindir1="$AiresRootDir/bin"
+      bindir2="$AbsoluteBinDir"
+      binlink=2
+    fi
+  ;;
+  _*) # Non absoulte specification.
+    echo Relative directory specifications not accepted. Use absolute ones.
+    echo "(AbsoluteBinDir=$AbsoluteBinDir)"
+    echo Installation aborted.
+    rm -f cfg.tmp
+    exit
+  ;;
+esac
+echo "bindir0=\"$bindir0\"" >> cfg.tmp
+echo "bindir1=\"$bindir1\"" >> cfg.tmp
+echo "bindir2=\"$bindir2\"" >> cfg.tmp
+echo "binlink=\"$binlink\"" >> cfg.tmp
+#
+case "_$AbsoluteLibDir" in
+  _)
+    libdir0="$AiresRootDir/$version/lib"
+    libdir1="$AiresRootDir/lib"
+    libdir2="$libdir1"
+    liblink=0
+  ;;
+  _/*)
+    if [ "_$SetLibLinks" = "_NO" -o "_$SetLibLinks" = "_No" -o \
+         "_$SetLibLinks" = "_NOT" -o "_$SetLibLinks" = "_Not" -o \
+         "_$SetLibLinks" = "_N" -o "_$SetLibLinks" = "N" ]
+    then
+      libdir0="$AbsoluteLibDir"
+      libdir1="$libdir0"
+      libdir2="$libdir0"
+      liblink=1
+    else
+      libdir0="$AiresRootDir/$version/lib"
+      libdir1="$AiresRootDir/lib"
+      libdir2="$AbsoluteLibDir"
+      liblink=2
+    fi
+  ;;
+  _*) # Non absoulte specification.
+    echo Relative directory specifications not accepted. Use absolute ones.
+    echo "(AbsoluteLibDir=$AbsoluteLibDir)"
+    echo Installation aborted.
+    rm -f cfg.tmp
+    exit
+  ;;
+esac
+echo "libdir0=\"$libdir0\"" >> cfg.tmp
+echo "libdir1=\"$libdir1\"" >> cfg.tmp
+echo "libdir2=\"$libdir2\"" >> cfg.tmp
+echo "liblink=\"$liblink\"" >> cfg.tmp
+#
+if [ "_$MainName" = "_" ]
+then
+  echo The name for the main simulation program is the null string
+  echo Installation aborted.
+  rm -f cfg.tmp
+  exit
+fi
+echo "MainName=\"$MainName\"" >> cfg.tmp
+if [ "_$SryName" = "_" ]
+then
+  echo The name for the summary program is the null string
+  echo Installation aborted.
+  rm -f cfg.tmp
+  exit
+fi
+echo "SryName=\"$SryName\"" >> cfg.tmp
+echo "otherprogs=\"${otherprogs}\"" >> cfg.tmp
+for prog in $otherprogs; do
+  tmpvar="\$${prog}Name"
+  eval otherprog="$tmpvar"
+  if [ "_$otherprog" = "_" ]
+  then
+    echo The name for $prog program is the null string
+    echo Installation aborted.
+    rm -f cfg.tmp
+    exit
+  fi
+  echo "${prog}Name=\"$otherprog\"" >> cfg.tmp
+done
+if [ "_$LibName" = "_" ]
+then
+  echo The name for the object library is the null string
+  echo Installation aborted.
+  rm -f cfg.tmp
+  exit
+fi
+echo "LibName=\"$LibName\"" >> cfg.tmp
+#
+# Other main simulation program names.
+#
+echo "nsimprogs=\"${nsimprogs}\"" >> cfg.tmp
+#
+if [ "_$nsimprogs" != "_" ]
+then
+  for prog in $nsimprogs; do
+    tmpvar="\$MainName${prog}"
+    eval tmpvarp="$tmpvar"
+    if [ "_$tmpvarp" = "_" ]
+    then
+#
+#     Taking a default value for the corresponding simulation program.
+#
+      tmpvarp="${MainName}${prog}"
+    fi
+#
+    echo "MainName${prog}=\"${tmpvarp}\"" >> cfg.tmp
+  done
+fi
+#
+# .airesrc initialization file replacement string.
+#
+echo "substituteairesrc='$SubstituteAiresrc'" >> cfg.tmp
+#
+exit
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

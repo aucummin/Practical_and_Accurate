@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# ------------
+# checklastpar
+# ------------
+#
+# AIRES installing system internal script.
+# (Comparing a given parameter with its setting in a previous installation).
+#
+# Written by S. J. Sciutto, La Plata 1997.
+#
+# Last modification: 20/Aug/1997.
+#
+# Usage:
+#
+#   checklastpar parname currvalue rootdir
+#
+# DO NOT MODIFY THIS SCRIPT!
+#
+###############################################################################
+#
+iroot=$3
+if [ ! $iroot ]
+then
+  iroot="."
+fi
+if [ -f ${iroot}/icfg/cfg.last ]
+then
+  . ${iroot}/icfg/cfg.last
+  tmp="\$$1"
+  eval tmp="$tmp"
+  if [ "_$2" = "_$tmp" -o "$2" = "_$tmp" ]
+  then
+    echo "OK"
+  else
+    echo "$tmp $2"
+  fi
+else
+  echo "LFNF"
+fi
+exit
+#
+###############################################################################
+###############################################################################

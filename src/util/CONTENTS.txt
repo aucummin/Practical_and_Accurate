@@ -1,0 +1,21 @@
+
+
+    AIRES distribution src/util directory CONTENTS.txt file.
+
+This directory contain several auxiliary programs than may be helpful
+in some cases where there are installation problems.
+The programs currently distributed are:
+
+       setlreclunit        Checks the correct value for config parameter
+                           IOReclUnit.
+
+       sysdeptest          Checks the routines which contains system
+                           calls (date, cputime, etc.).
+
+       spawntest.f         Checks the routine sysspawn.
+
+These programs can be used to test new version of the called routines.
+If you succeed in programming such routines for other platforms and/or
+operating systems, or if you want to do that and have problems, please
+contact us via electronic mail to sciutto@fisica.unlp.edu.ar.
+

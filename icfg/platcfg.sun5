@@ -1,0 +1,46 @@
+#
+# ------------
+# platcfg.sun5
+# ------------
+#
+# This is a sh script to set SUN platform (Unix System V OS) specific
+# settings.
+# Is is "sourced" from other sripts.
+#
+# Written by S. J. Sciutto, La Plata 1997, 1998, 2000, 2002.
+#
+# Last modification: 08/Apr/2002.
+#
+###############################################################################
+#
+# Settings for SUN workstations with Unix System V operating system.
+#
+fortcommand="f77"
+fortflags="-O4"
+fortspecialflags=""
+fortno0flags=""
+fortflags0="-O2"
+linkcommand="f77"
+linkflags="-O4"
+linkflags0="-O2"
+linkspecialflags=""
+linkno0flags=""
+ccommand="cc"
+cflags="-O"
+nativeflag="-native"
+diorecunit=1
+defaultextensiondir="extensions1"
+defaultsysdepdir="sysdep2"
+specialsysdepdir="mvfile sysdep1"
+fclibs=""
+cunderscores=TRUE
+arcommand="ar -cr"
+airesrc=sun5
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Do not place any "exit" here!
+#
+###############################################################################
+#

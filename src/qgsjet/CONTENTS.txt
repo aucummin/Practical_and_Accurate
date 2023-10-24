@@ -1,0 +1,39 @@
+
+
+    AIRES distribution src/qgsjet directory CONTENTS.txt file.
+
+This directory contains the QGSJET 01c (version 2001.3) hadronic
+interactions model of N. N. Kalmykov and S. S. Ostapchenko
+(see, N. N. Kalmykov, S. S. Ostapchenko, A. I. Pavlov,
+ Nucl. Phys. B (Proc. Suppl.) 52B (1997) 17).
+
+
+The files within "qgsjet" directory are:
+
+      AiresCalls.f            Interface AIRES-QGSJET01.
+
+      psran.f                 Link between AIRES random number generator and
+                              the generator call used within QGSJET.
+
+      qgsjet01c.f             QGSJET01 routines. These routines were taken
+                              from the QGSJET file that comes with the CORSIKA
+                              air shower simulation program. A few minor
+                              modifications were performed.
+
+      qgsjet/qgsjet01c.f.gz   QGSJET01 original source code, as distributed
+                              with CORSIKA (this package contains some
+                              modifications done by D. Heck, Ik3 Fzk Karlsruhe,
+                              Germany).
+
+
+The subroutines that make the interface AIRES-QGSJET01c are written in standard
+FORTRAN 77, using a few extensions that are supported by all presently
+available compilers (to the best of our knowledge, of course).
+
+There are no user customizable files here. If you have installation problems
+it is unlikely that they are due to any of the procedures stored within this
+directory. Anyway, if you find something wrong that involves one or more of
+these files, we will very much acknowledge if you inform about the problem
+via electronic mail to sciutto@fisica.unlp.edu.ar. You may also
+contact QGSJET's authors (see inside qgsjet01c.f).
+

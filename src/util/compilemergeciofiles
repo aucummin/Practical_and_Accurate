@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Script to build executable for mergeciofiles.
+#
+# It is assumed that Aires is installed under directory $AIRESROOT
+#
+AIRESROOT=$HOME/aires
+#
+g77 -O2 -Wall -o mergeciofiles mergeciofiles.f \
+    -I${AIRESROOT}/current/src/aires \
+    -L${AIRESROOT}/lib -lAires
+#
+exit

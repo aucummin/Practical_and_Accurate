@@ -1,0 +1,11 @@
+# -----------Tracksum file-------------
+# Columns:     (m)
+#        1-Shower Number
+#        2-Tracksum
+#        3-Sum Delta_z
+#        4-Sum Abs(Delta_z)
+#        5-Excess track sum (electron-positron)
+#        6-Excess sum Delta_z
+#        7-Excess sum Abs(Delta_z)
+#
+   1 0.20740E+14 0.30359E+13 0.58293E+13 0.63269E+13 0.70972E+12 0.23044E+13

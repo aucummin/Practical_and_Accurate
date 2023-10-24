@@ -1,0 +1,33 @@
+
+
+    AIRES distribution src/igrf directory CONTENTS.txt file.
+
+This directory contains the routines to evaluate the geomagnetic field
+at a given place (determined by geographical coordinates, altitude and
+date). The model used is the International Geomagnetic Reference Field
+(IGRF), described in www.ngdc.noaa.gov.
+
+The files within "igrf" directory are:
+
+      AiresCalls.f            Interface AIRES-IGRF10.
+
+      AiresLibutils.f         Some additional routines for the AIRES library.
+
+      igrf10syn.f             IGRF10 geomagnetic field syntesis routine.
+
+      igrfpar.f               Parameters currently used.
+
+      igrf10                  Directory containing the IGRF10 original
+                              source code.
+
+The subroutines that make the interface AIRES-IGRF are written in standard
+FORTRAN 77, using a few extensions that are supported by all presently
+available compilers (to the best of our knowledge, of course).
+
+There are no user customizable files here. If you have installation problems
+it is unlikely that they are due to any of the procedures stored within this
+directory. Anyway, if you find something wrong that involves one or more of
+these files, we will very much acknowledge if you inform about the problem
+via electronic mail to sciutto@fisica.unlp.edu.ar. You may also
+contact GEOMAG's authors (see inside directory geomag.unix).
+

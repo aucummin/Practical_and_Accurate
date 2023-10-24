@@ -1,0 +1,30 @@
+
+
+    AIRES distribution src/netlib_minpack directory CONTENTS.txt file.
+
+This directory contains the NETLIB implementation of the well-known
+Levenberg-Marquardt algorithm for nonlinear least squares fitting
+(package "lmder" of "minpack" within NETLIB).
+
+NETLIB (Internet: http://www.netlib.org/) is a collection of mathematical
+software, papers, and databases, most of them in the public domain.
+
+The files within "netlib_minpack" directory are:
+
+      dpmpar.f, enorm.f
+      lmder.f, lmpar.f,
+      qrfac.f, qrsolv.f       Non-linear least squares fitting routines.
+
+      minpack.readme,
+      lmder.f.tar.gz          "lmder" package original distribution.
+
+
+The subroutines that make the lmder package are written in standard
+FORTRAN 77.
+
+There are no user customizable files here. If you have installation problems
+it is unlikely that they are due to any of the procedures stored within this
+directory. Anyway, if you find something wrong that involves one or more of
+these files, we will very much acknowledge if you inform about the problem
+via electronic mail to sciutto@fisica.unlp.edu.ar.
+

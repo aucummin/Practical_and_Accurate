@@ -1,0 +1,17 @@
+
+
+    AIRES distribution src/sysdep1 directory CONTENTS.txt file.
+
+This directory contain routines which perform system dependent calls
+(date, time, etc.). Some of their statements are non-standard FORTRAN 77.
+
+"sysdep1g64" contain the routines that are compatible with linux OS and
+gnu compiler collection (gfortran), including 64 bit processors.
+
+There are no user customizable files here. If you want to develop similar
+routines to run under other systems, you should leave these intact, make
+another directory (preferently named "sysdepN" with N a number), and
+code new routines there. If you succeed in doing that for other platforms
+and/or operating systems, or if you want to do that and have problems,
+please contact us via electronic mail to sciutto@fisica.unlp.edu.ar.
+

@@ -1,0 +1,67 @@
+#
+# File demo2.inp: Generating 10 showers with energies ranging from 10^19 eV
+#                 to 10^20 eV
+#
+#------------------------------------------------------------------------------
+
+
+Rem SAMPLE SHOWERS WITH ENERGIES FROM 10^19 eV TO 10^20 eV
+
+Task demo2
+
+# Run control directives.
+
+ShowersPerRun  2
+MaxCpuTimePerRun  1 hr 30 min  # or 1.5 hr, or 5400 sec, or...
+RunsPerProcess 2
+
+# Main shower parameters.
+
+TotalShowers      10
+
+PrimaryParticle   Proton  60   # Multiple "Primary" directives
+PrimaryParticle   Iron    40   # imply mixed composition. Numbers are
+                               # relative weights.
+
+PrimaryEnergy     1e19 eV   1e20 eV  # Using default gamma
+
+PrimaryZenAngle   0 deg 45 deg
+
+# Other parameters.
+
+RandomSeed 0.125362 # If 0 the seed will be generated internally.
+
+Thinning   5.0E-5 Relative
+Ground     1000 g/cm2
+ObservingLevels 41 100 g/cm2 900 g/cm2
+
+SaveNotInFile grdpcles gamma   # Do not save gammas in the ground pcle. file.
+SaveInFile    lgtpcles mu+ mu- # Save only mu+ and mu- in the longit. file.
+
+RecordObsLevels    None      # These directives allow controlling how many
+RecordObsLevels    1 5 2     # observing levels are to be saved in the
+RecordObsLevel     25        # lgtpcles file. In this case only levels number
+                             # 1, 3, 5 and 25 will be saved.
+
+# Threshold energies.
+
+GammaCutEnergy     700 KeV
+ElectronCutEnergy  200 KeV
+MuonCutEnergy        1 MeV
+MesonCutEnergy     1.5 MeV
+NuclCutEnergy      150 MeV
+
+#
+# These instructions are for selecting the output data to be printed
+# (or exported).
+#
+PrintTable 1291
+PrintTable 1707
+PrintTable 2207 Opt d
+PrintTable 3001 Opt M
+#
+End
+#
+
+
+

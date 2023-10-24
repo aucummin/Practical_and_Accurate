@@ -1,0 +1,253 @@
+#!/bin/sh
+#
+# ---------
+# doinstall
+# ---------
+#
+# AIRES installing system main script.
+#
+# Written by S. J. Sciutto, La Plata 1997, 1998; Fermilab 1999;
+#                           La Plata 1999, 2001.
+#
+# Last modification: 17/Jul/2001.
+#
+# Usage:
+#
+#   doinstall install_level [config_ext]
+#
+# where install_level is 0 or 1. 0 means complete installing, including
+# the removal of pre-existing spool and log directories. 1 means normal
+# installing.
+#
+# Use doinstall 0 to install aires for the first time or doinstall 1 for
+# upgrades. Other argument values are also valid: doinstall i will:
+# Recompile the sources for i = 2, relink them for i = 3 and remake the
+# object library for i = 4.
+#
+# config_ext is an optional string to specify the extension of the
+# config file. If this string is not null then the file "config.config_ext"
+# will be used instead of the default configuration file "config"
+#
+# NO USER-CUSTOMIZABLE THINGS INSIDE! EDIT FILE "config" TO SET THE
+# DIFFERENT OPTIONS AVAILABLE.
+#
+#
+###############################################################################
+#
+# Checking arguments: Setting install level and config file.
+#
+if [ $# -lt 1 ]
+then
+  echo Usage: doinstall install_level [config_ext]
+  exit
+fi
+#
+# Setting install level
+#
+case "_$1" in
+  _0|_1|_2|_3|_4|_5|_6|_7|_8|_9)
+    instlevel=$1
+    shift
+  ;;
+  *)
+    echo Usage: doinstall install_level [config_ext]
+    exit
+  ;;
+esac
+#
+# Setting config file name.
+#
+if [ "_$1" = "_" ]
+then
+  config="./config"
+  oconfi=
+elif [ "_$1" = "_-a" ]
+then
+  config="./config"
+  oconfi=
+  shift
+else
+  config="./config.$1"
+  oconfi=config.$1
+  shift
+fi
+#
+otherargs="$*"
+#
+###############################################################################
+#
+# Checking the config file and existence of main subdirectories in
+# the distribution data.
+#
+for idir in ibin icfg src doc demos; do
+  if [ ! -d $idir ]
+  then
+    echo Failed to find correct directory tree in installation files!
+    echo Installation aborted.
+    exit
+  fi
+done
+#
+. ./icfg/config0
+#
+if [ -f $config ]
+then
+  . $config
+else
+  echo Cannot find \"$config\" file.
+  echo Installation aborted.
+  exit
+fi
+#
+# Checking if the file was edited.
+#
+if [ "_$Platform" = "_" ]
+then
+  echo Before invoking the installing procedure, it is necessary to edit the
+  echo file \"$config\", placed in the current directory, and set the
+  echo corresponding variables accordingly with the guidelines given at
+  echo each case.
+  exit
+fi
+#
+###############################################################################
+#
+# GOING ON WITH THE INSTALLATION
+#
+if [ $oconfi ]
+then
+  echo
+  echo ">>> USING CONFIGURATION FILE $oconfi"
+fi
+#
+# Checking customized parameters and making internal tmp file.
+#
+echo
+echo '>>> Checking config data.'
+trap "echo 'Installation process interrupted.'; \
+      rm -f $iroot/*.tmp* $iroot/*.TMP* ; exit" 2
+./ibin/mktmpcfg $config
+if [ ! -f cfg.tmp ]
+then
+  exit
+fi
+echo '    Done.'
+iroot=`pwd`
+#
+if [ $instlevel -le 1 ]
+then
+  echo
+  echo '>>> STARTING AIRES INSTALLATION.'
+  echo
+fi
+#
+# Running the different installation scripts:
+#
+# mkairesdirs    Creating/checking main directories and downloading basic
+#                files.
+#
+# airescompilib   Compiling the sources, making the executable binaries and
+#                 the object libraries.
+#
+# arinstall       Setting the Aires Runner system and making soft links.
+#
+# cerninstall     Installing the cerntools library.
+#
+# checkiall       Checking that everything is ok.
+#
+for script in mkairesdirs airescompilib arinstall cerninstall checkiall; do
+  exe="./ibin/$script"
+  if [ -x $exe ]
+  then
+    trap "echo 'Installation process interrupted.'; \
+         rm -f $iroot/*.tmp* $iroot/*.TMP* ; exit" 2
+    $exe $config $instlevel $otherargs
+    if [ ! -f cfg.tmp ]
+    then
+      rm -f $iroot/*.tmp* $iroot/*.TMP*
+      exit
+    fi
+  else
+    echo
+    echo Cannot execute installation script $exe
+    echo Installation aborted.
+    rm -f $iroot/*.tmp* $iroot/*.TMP*
+    exit
+  fi
+done
+#
+. ./cfg.tmp
+#
+if [ $instlevel -le 1 ]
+then
+  echo
+  if [ "_$oldversionp" != "_" ]
+  then
+    echo ">>> Detected previous installation of AIRES ${oldversionp}."
+    echo ">>> Current AIRES version has been modified."
+    echo ">>> AIRES $versionp is now the current version."
+    if [ "_$oldversion" != "_" -a "_$oldroot" != "_" ]
+    then
+      echo
+      echo "    Previous installation files are located in directory"
+      echo "    ${oldroot}/${oldversion}."
+      echo \
+      "    They can be removed if the previous version is no longer needed."
+    fi
+  else
+    echo ">>> AIRES $versionp is now the current version."
+  fi
+  echo
+  echo ">>> INSTALLATION SUCCESSFULLY COMPLETED."
+#
+  if [ $rcwng -ne 0 ]
+  then
+    echo
+    case $rcwng in
+      1) # .airesrc existed and was not substituted.
+         echo "*** WARNING: File ${HOME}/.airesrc was not changed."
+         echo \
+         "*** A copy of the \".airesrc\" file coming with this distribution"
+         echo "*** was saved as ${bindir2}/airesrc"
+         echo "*** You should compare both files and see if there is anything"
+         echo "*** to change in the already existing one."
+      ;;
+      2) # .airesrc existed and was substituted.
+         echo "*** WARNING: File ${HOME}/.airesrc was replaced."
+         echo "*** The old version was saved as ${HOME}/.airesrc.bck"
+      ;;
+    esac
+  fi
+fi
+#
+if [ $instlevel = 0 ]
+then
+  cat << EOD1
+
+    To complete the software installation you should:
+
+    (1) Make sure that the directory $bindir2
+        is placed in your environment search path. If you do not
+        know how to do this, consult a local Unix expert.
+
+    (2) Edit the file .airesrc in your home directory, and see if you
+        need to change something.
+EOD1
+fi
+#
+if [ $instlevel -le 1 ]
+then
+  echo
+  echo "    See the documentation for further information."
+else
+  echo
+  echo ">>> End of installation process."
+fi
+#
+echo
+cd $iroot
+rm -f *.tmp* *.TMP*
+exit
+#
+###############################################################################
+###############################################################################

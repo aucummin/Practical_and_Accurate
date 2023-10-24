@@ -1,0 +1,841 @@
+#
+# -------------
+# compilibfiles
+# -------------
+#
+# This is a sh script to set the files to be compiled and linked during
+# the installation of AIRES.
+# Is is "sourced" from other sripts.
+#
+# Written by S. J. Sciutto, La Plata 1997, 1998, 1999; Fermilab 1999;
+#                           La Plata 1999, 2000; Rio de Janeiro 2001;
+#                           La Plata 2001, 2002, 2003; Fermilab 2003;
+#                           La Plata 2004, 2005, 2006.
+#
+# Last modification: 12/Dec/2006.
+#
+###############################################################################
+#
+# SETTING DIRECTORIES AND FILES WITHIN THEM.
+#
+sfilecategs="comp main sry otherIDF2ADF otherMerge lib"
+#
+for fcateg in $sfilecategs; do
+  fcstr="${fcateg}directs"
+  eval ${fcstr}=""
+done
+#
+if [ "_$nsimprogs" != "_" ]
+then
+  for prog in $nsimprogs; do
+    tmpvarp="maindirects${prog}"
+    eval $tmpvarp=\"\"
+  done
+fi
+#
+if [ "_$otherprogs" != "_" ]
+then
+  for prog in $otherprogs; do
+    tmpvarp="otherdirects${prog}"
+    eval $tmpvarp=\"\"
+  done
+fi
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Programs that need to be linked with the AIRES library.
+#
+uselibrary_otherMerge=TRUE
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# In directory "aires":
+#
+alldirects="$alldirects aires"
+aires_xdl=1
+#
+# Conditional settings.
+#
+sn1=2
+sn2=3
+sn3=4
+#
+# Ground particle file record format.
+#
+case $grdpclesenable in
+  1)
+     cioship1="cioship1s"
+  ;;
+  2)
+     cioship1="cioship1"
+  ;;
+  3)
+     cioship1="cioship1l"
+  ;;
+  *)
+     cioship1="cioship1"
+  ;;
+esac
+sn=1
+shipall="1"
+#
+# Longitudinal tracking record format.
+#
+case $lgtpclesenable in
+  0)
+     cioship2=""
+     shiptmp=
+  ;;
+  1)
+     cioship2="cioship2s"
+     shiptmp=TRUE
+  ;;
+  2)
+     cioship2="cioship2a"
+     shiptmp=TRUE
+  ;;
+  3)
+     cioship2="cioship2b"
+     shiptmp=TRUE
+  ;;
+  4)
+     cioship2="cioship2l"
+     shiptmp=TRUE
+  ;;
+  5)
+     cioship2="cioship2xl"
+     shiptmp=TRUE
+  ;;
+  *)
+     cioship2="cioship2s"
+     shiptmp=TRUE
+  ;;
+esac
+if [ $shiptmp ]
+then
+  kernel3="kernel3a"
+  tmpvar="\$sn${sn}"
+  eval sn=$tmpvar
+  shipall="${shipall}${sn}"
+else
+  kernel3="kernel3"
+fi
+#
+# Thinning algorithm.
+#
+case $thinningenable in
+  0) thntrail="_noth"
+  ;;
+  *) thntrail=
+  ;;
+esac
+#
+# Files to compile.
+#
+compdirects="$compdirects aires"
+#
+aires_compf="Aires AiresIDF2ADF AiresMerge AiresSry \
+                adfread adfwrite amutils atmosphere1 atmosphere2 \
+                cio2utils cioaux ciocode ciodecode \
+                ciodefine ciodefine1 ciodefine2 ciodefsprec \
+                ciogetheader1 cioh1info ciomgr0 ciomgr1 ciomgr2 \
+                cioputheader1 $cioship1 $cioship2 \
+                fieldparser \
+                conversion eplusminus errinit gammarays \
+                heavycharged heavyneutral hwvarutils \
+                iadfutils idfread idfread_auxd idfwrite \
+                inicheck inisry init initadf initlib \
+                initp initsim initss initutils initutils2 \
+                kernel1 kernel2 $kernel3 \
+                libutils mathutils mathutils0 \
+                modelinit modelinit_d modelutils nucfragmodel \
+                observables observables2 \
+                omsgmgr particles pcleshipall${shipall} pcleutils \
+                pershowerdata \
+                pstackmgr random0 random1 randomutils rsdread \
+                scheduler speilib splitmodel \
+                stackpcle$thntrail stackpcle0 stackprimary \
+                startstop statutils stringutils summaryf summaryutils \
+                sysutils thininit$thntrail tss tssutils \
+                versioncheck xghfutils xmaxfit xmaxfitcint xutils"
+#
+aires_compc=
+#
+# Files for the simulation program(s).
+#
+maindirects="$maindirects aires"
+#
+if [ "_$nsimprogs" != "_" ]
+then
+  for prog in $nsimprogs; do
+    tmpvarp="maindirects${prog}"
+    tmpvar2="\$$tmpvarp"
+    eval $tmpvarp=\"$tmpvar2 aires\"
+  done
+fi
+#
+aires_mainf="Aires \
+              kernel1 scheduler \
+              fieldparser \
+              gammarays eplusminus heavyneutral heavycharged \
+              splitmodel nucfragmodel \
+              modelutils mathutils mathutils0 atmosphere1 atmosphere2 \
+              kernel2 $kernel3 $cioship1 $cioship2 \
+              random0 stackpcle$thntrail stackpcle0 \
+              pstackmgr ciomgr1 ciocode stackprimary \
+              particles conversion \
+              observables observables2 \
+              pershowerdata xmaxfit statutils \
+              startstop init initlib initsim \
+              initp initutils thininit$thntrail \
+              inicheck inisry modelinit \
+              pcleshipall${shipall} idfwrite idfread \
+              summaryf summaryutils tss tssutils initss xutils adfwrite \
+              cioaux ciomgr0 cioputheader1 \
+              ciodefine ciodefine1 ciodefine2 ciodefsprec \
+              hwvarutils errinit omsgmgr rsdread \
+              stringutils sysutils versioncheck"
+#
+aires_mainc=
+aires_main2c=
+#
+# Files for the summary program.
+#
+srydirects="$srydirects aires"
+#
+aires_sryf="AiresSry \
+              atmosphere1 random0 pstackmgr \
+              particles conversion \
+              observables observables2 pershowerdata xmaxfit statutils \
+              startstop init initlib initadf initp initutils fieldparser\
+              thininit$thntrail inicheck inisry modelinit_d \
+              adfread idfread \
+              summaryf summaryutils tss tssutils initss xutils \
+              hwvarutils errinit omsgmgr rsdread \
+              stringutils sysutils versioncheck"
+#
+aires_sryc=
+#
+# Files for the Aires object library.
+#
+libdirects="$libdirects aires"
+#
+aires_libf="adfread atmosphere1 cio2utils ciodecode ciogetheader1 \
+              cioh1info ciomgr0 ciomgr2 \
+              conversion errinit iadfutils idfread idfread_auxd \
+              inisry initlib initutils initutils2 libutils mathutils0 \
+              observables2 omsgmgr particles pcleutils \
+              random0 random1 randomutils speilib \
+              startstop statutils stringutils summaryf summaryutils \
+              sysutils versioncheck xghfutils xmaxfit xmaxfitcint xutils"
+#
+aires_libc=
+#
+# Files for the IDF2ADF program.
+#
+otherIDF2ADFdirects="$otherIDF2ADFdirects aires"
+#
+aires_otherIDF2ADFf="AiresIDF2ADF \
+              atmosphere1 random0 pstackmgr \
+              particles conversion observables observables2 \
+              pershowerdata xmaxfit statutils \
+              startstop init initlib initutils thininit$thntrail modelinit_d \
+              idfread adfwrite xutils \
+              hwvarutils errinit omsgmgr \
+              stringutils sysutils versioncheck"
+#
+aires_otherIDF2ADFc=
+#
+# Files for the Merge program.
+#
+otherMergedirects="$otherMergedirects aires"
+#
+aires_otherMergef="AiresMerge amutils adfwrite pershowerdata"
+#
+aires_otherMergec=
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# In directory "igrf":
+#
+alldirects="$alldirects igrf"
+igrf_xdl=2
+#
+# Files to compile.
+#
+compdirects="$compdirects igrf"
+#
+igrf_compf="AiresCalls AiresLibutils igrf10syn"
+#
+aires_compc=
+#
+# Files for the simulation program(s).
+#
+maindirects="$maindirects igrf"
+#
+if [ "_$nsimprogs" != "_" ]
+then
+  for prog in $nsimprogs; do
+    tmpvarp="maindirects${prog}"
+    tmpvar2="\$$tmpvarp"
+    eval $tmpvarp=\"$tmpvar2 igrf\"
+  done
+fi
+#
+igrf_mainf="AiresCalls igrf10syn"
+#
+igrf_mainc=
+#
+# Files for the summary program.
+#
+srydirects="$srydirects igrf"
+#
+igrf_sryf="AiresCalls igrf10syn"
+#
+igrf_sryc=
+#
+# Files for the Aires object library.
+#
+libdirects="$libdirects igrf"
+#
+igrf_libf="AiresCalls AiresLibutils igrf10syn"
+#
+# Files for other programs: None
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# In directory "sibyll":
+#
+alldirects="$alldirects sibyll"
+sibyll_xdl=2
+#
+# Files to compile.
+#
+compdirects="$compdirects sibyll"
+#
+sibyll_compf="AiresCalls linkutils nuclib_21 siblinkbldat sibyll_21"
+#
+sibyll_compc=
+#
+# Files for the simulation program(s).
+#
+maindirects="$maindirects sibyll"
+#
+# This directory is not automatically included for other programs.
+#
+sibyll_mainf="AiresCalls linkutils sibyll_21 nuclib_21 siblinkbldat"
+#
+sibyll_mainc=
+#
+# Files for the summary program: None
+#
+# Files for the Aires object library: None
+#
+# Files for other programs: None
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# In directory "qgsjet":
+#
+alldirects="$alldirects qgsjet"
+qgsjet_xdl=2
+#
+# Files to compile.
+#
+compdirects="$compdirects qgsjet"
+#
+qgsjet_compf="AiresCalls psran qgsjet01c"
+#
+qgsjet_compc=
+#
+# Files for the simulation program(s).
+# (This directory is not included for the main simulation program).
+#
+maindirectsQbasic="$maindirectsQ"
+maindirectsQ="$maindirectsQ qgsjet"
+#
+qgsjet_mainQf="AiresCalls psran qgsjet01c"
+#
+qgsjet_mainQc=
+#
+# Files for the summary program: None
+#
+# Files for the Aires object library: None
+#
+# Files for other programs: None
+#
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# In directory "qgsjetII":
+#
+alldirects="$alldirects qgsjetII"
+qgsjetII_xdl=2
+#
+# Files to compile.
+#
+compdirects="$compdirects qgsjetII"
+#
+qgsjetII_compf="AiresCalls psran qgsjet-II-03"
+#
+qgsjetII_compc=
+#
+# Files for the simulation program(s).
+# (This directory is not included for the main simulation program).
+#
+maindirectsQII="$maindirectsQbasic qgsjetII"
+#
+qgsjetII_mainQIIf="AiresCalls psran qgsjet-II-03"
+#
+qgsjetII_mainQIIc=
+#
+# Files for the summary program: None
+#
+# Files for the Aires object library: None
+#
+# Files for other programs: None
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# In directory "netlib_minpack":
+#
+alldirects="$alldirects netlib_minpack"
+netlib_minpack_xdl=2
+#
+# Files to compile.
+#
+compdirects="$compdirects netlib_minpack"
+#
+netlib_minpack_compf="dpmpar enorm lmder lmpar qrfac qrsolv"
+netlib_minpack_compc=
+#
+# Files for the simulation program(s).
+#
+maindirects="$maindirects netlib_minpack"
+#
+if [ "_$nsimprogs" != "_" ]
+then
+  for prog in $nsimprogs; do
+    tmpvarp="maindirects${prog}"
+    tmpvar2="\$$tmpvarp"
+    eval $tmpvarp=\"$tmpvar2 netlib_minpack\"
+  done
+fi
+#
+netlib_minpack_mainf="dpmpar enorm lmder lmpar qrfac qrsolv"
+netlib_minpack_mainc=
+#
+# Files for the summary program.
+#
+srydirects="$srydirects netlib_minpack"
+#
+netlib_minpack_sryf="dpmpar enorm lmder lmpar qrfac qrsolv"
+netlib_minpack_sryc=
+#
+# Files for the Aires object library.
+#
+libdirects="$libdirects netlib_minpack"
+#
+netlib_minpack_libf="dpmpar enorm lmder lmpar qrfac qrsolv"
+netlib_minpack_libc=
+#
+# Files for the IDF2ADF program.
+#
+otherIDF2ADFdirects="$otherIDF2ADFdirects netlib_minpack"
+#
+netlib_minpack_otherIDF2ADFf="dpmpar enorm lmder lmpar qrfac qrsolv"
+#
+netlib_minpack_otherIDF2ADFc=
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# In directory "misc":
+#
+alldirects="$alldirects misc"
+misc_xdl=2
+#
+# Files to compile.
+#
+compdirects="$compdirects misc"
+#
+misc_compf="gamma psi"
+misc_compc=
+#
+# Files for the simulation program(s): None
+#
+# Files for the summary program: None.
+#
+# Files for the Aires object library.
+#
+libdirects="$libdirects misc"
+#
+misc_libf="gamma psi"
+misc_libc=
+#
+# Files for the IDF2ADF program: None.
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# In directory "cinterface":
+#
+alldirects="$alldirects cinterface"
+cinterface_xdl=2
+#
+# The code within this directory is used only when the user requests
+# compiling and archiving the C-FORTRAN interface modules.
+#
+if [ "_$cinterfaceflag" != "_FALSE" ]
+then
+#
+# Files to compile.
+#
+  compdirects="$compdirects cinterface"
+#
+  cinterface_compf="cio2utilsfc cioh1infofc ciomgr2fc cfchar \
+                    iadfutilsfc initutilsfc speilibfc"
+#
+  cinterface_compc="MAIN__ cio2utilsc cioh1infoc ciomgr2c \
+                    iadfutilsc initutilsc speilibc str2iarray"
+#
+# Files for the simulation program(s). None.
+#
+# Files for the summary program. None.
+#
+# Files for other programs: None
+#
+# Files for the Aires object library.
+#
+  libdirects="$libdirects cinterface"
+#
+  cinterface_libf="cio2utilsfc cioh1infofc ciomgr2fc cfchar \
+                   iadfutilsfc initutilsfc speilibfc"
+#
+  cinterface_libc="MAIN__ cio2utilsc cioh1infoc ciomgr2c \
+                   iadfutilsc initutilsc speilibc str2iarray"
+#
+fi
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# In directory "unixdep": This directory contains routine with non
+#                         standard F77 or C code; the extensions used
+#                         are, however, independent of the platform/OS
+#                         provided it is UNIX.
+#
+alldirects="$alldirects unixdep"
+unixdep_xdl=3
+#
+# Files to compile.
+#
+compdirects="$compdirects unixdep"
+#
+unixdep_compf="Aires_dirs Aires_status absfnset importvar"
+#
+unixdep_compc=
+#
+# Files for the simulation program(s).
+#
+maindirects="$maindirects unixdep"
+#
+if [ "_$nsimprogs" != "_" ]
+then
+  for prog in $nsimprogs; do
+    tmpvarp="maindirects${prog}"
+    tmpvar2="\$$tmpvarp"
+    eval $tmpvarp=\"$tmpvar2 unixdep\"
+  done
+fi
+#
+unixdep_mainf="Aires_dirs Aires_status absfnset importvar"
+#
+unixdep_mainc=
+#
+# Files for the summary program.
+#
+srydirects="$srydirects unixdep"
+#
+unixdep_sryf="absfnset importvar"
+#
+unixdep_sryc=
+#
+# Files for the IDF2ADF program.
+#
+otherIDF2ADFdirects="$otherIDF2ADFdirects unixdep"
+#
+unixdep_otherIDF2ADFf="absfnset importvar"
+#
+unixdep_otherIDF2ADFc=
+#
+# Files for the Aires object library.
+#
+libdirects="$libdirects unixdep"
+#
+unixdep_libf="absfnset importvar"
+#
+unixdep_libc=
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Directories and files containing non standard code.
+#
+nonstdcategs=""
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# EXTENSIONS TO STANDARD F77 CODE THAT ARE OS/PLATFORM DEPENDENT.
+#
+# For each file it is necessary to select the directory to use. The
+# directory may be different, accordingly with the platform/OS.
+#
+nonstdcategs="$nonstdcategs extension"
+#
+# Directories available.
+#
+extensiondirs="extensions1 extensions2"
+extensions_xdl=3
+#
+# Files to compile.
+#
+extensions_compf="apopen"
+extensions_compc=
+#
+# Files for the simulation program(s).
+#
+extensions_mainf="apopen"
+extensions_mainc=
+#
+# Files for the summary program.
+#
+extensions_sryf="apopen"
+extensions_sryc=
+#
+# Files for the IDF2ADF program.
+#
+extensions_otherIDF2ADFf="apopen"
+extensions_otherIDF2ADFc=
+#
+# Files for the Aires object library.
+#
+extensions_libf="apopen"
+extensions_libc=
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# SYSTEM DEPENDENT DIRECTORIES (Containing non-standard code and system
+#                               calls).
+#
+# It is necessary to select the directory to use, which may be different
+# for different source files.
+#
+nonstdcategs="$nonstdcategs sysdep"
+#
+# Directories available.
+#
+sysdepdirs="sysdep1 sysdep1g64 sysdep1c sysdep1old sysdep101 \
+            sysdep2 sysdep3 sysdep4"
+sysdeps_xdl=3
+#
+# Files at each directory (Notice that sysdep1, sysdep1old and sysdep101
+# contain additional C files).
+#
+# Files to compile.
+#
+sysdeps_compf="daticpu mvfile sysspawn username"
+sysdeps_compc=
+sysdep1_compf_daticpu_treec="ccdaticpu"
+sysdep1g64_compf_daticpu_treec="ccdaticpu"
+sysdep101_compf_daticpu_treec="ccdaticpu"
+#
+# Files for the simulation program(s).
+#
+sysdeps_mainf="daticpu mvfile sysspawn username"
+sysdeps_mainc=
+sysdep1_mainf_daticpu_treec="ccdaticpu"
+sysdep1g64_mainf_daticpu_treec="ccdaticpu"
+sysdep101_mainf_daticpu_treec="ccdaticpu"
+#
+# Files for the summary program.
+#
+sysdeps_sryf="daticpu sysspawn username"
+sysdeps_sryc=
+sysdep1_sryf_daticpu_treec="ccdaticpu"
+sysdep1g64_sryf_daticpu_treec="ccdaticpu"
+sysdep101_sryf_daticpu_treec="ccdaticpu"
+#
+# Files for the IDF2ADF program.
+#
+sysdeps_otherIDF2ADFf="daticpu sysspawn username"
+sysdeps_otherIDF2ADFc=
+sysdep1_otherIDF2ADFf_daticpu_treec="ccdaticpu"
+sysdep1g64_otherIDF2ADFf_daticpu_treec="ccdaticpu"
+sysdep101_otherIDF2ADFf_daticpu_treec="ccdaticpu"
+#
+# Files for the Aires object library.
+#
+sysdeps_libf="daticpu mvfile sysspawn username"
+sysdeps_libc=
+sysdep1_libf_daticpu_treec="ccdaticpu"
+sysdep1g64_libf_daticpu_treec="ccdaticpu"
+sysdep101_libf_daticpu_treec="ccdaticpu"
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# PROCESSING THE DIRECTORIES CONTAINING FILES WITH NON STANDARD CODE.
+#
+#
+for fcateg in $sfilecategs; do
+  eval ${fcateg}depdirs=
+done
+#
+for depcat in $nonstdcategs; do
+#
+  catdirs=\$${depcat}dirs
+  eval catdirs=\"$catdirs\"
+  defcatdir=\$default${depcat}dir
+  eval defcatdir=$defcatdir
+  catxdl=\$${depcat}s_xdl
+  eval catxdl=$catxdl
+#
+  specialdirs=\$special${depcat}dir
+  eval specialdirs="$specialdirs"
+  if [ "_$specialdirs" != "_" ]
+  then
+    sgk=NEXTXX
+    for sgfd in $specialdirs; do
+      if [ $sgk = NEXTXX ]
+      then
+        sgk=$sgfd
+      else
+        eval ${depcat}dir_${sgk}=$sgfd
+        sgk=NEXTXX
+      fi
+    done
+  fi
+#
+  for spdir in $catdirs; do
+    alldirects="$alldirects $spdir"
+    eval ${spdir}_xdl=$catxdl
+  done
+#
+  for fcateg in $sfilecategs; do
+#
+    for spdir in $catdirs; do
+      pfdset="use${spdir}"
+      eval ${pfdset}=
+    done
+#
+    for lang in f c; do
+      for pfdir in $catdirs; do
+        pfdset="${pfdir}_${fcateg}${lang}"
+        eval ${pfdset}=
+      done
+      eval ftree${lang}=
+    done
+#
+    for allfstr in ${depcat}s_${fcateg} ftree; do
+      for lang in f c; do
+#
+        allfi="\$${allfstr}${lang}"
+        eval allfi="$allfi"
+#
+        for sfi in $allfi; do
+          sfid="\$${depcat}dir_${sfi}"
+          eval sfid="$sfid"
+          if [ "_$sfid" = "_" ]
+          then
+            sfid=$defcatdir
+          fi
+          pfdset="\$use${sfid}"
+          eval usethisdir=$pfdset
+          if [ "_$usethisdir" = "_" ]
+          then
+            pfdstr="${fcateg}depdirs"
+            pfdset=\$$pfdstr
+            eval ${pfdstr}=\"${pfdset} $sfid\"
+          fi
+          pfdstr="${sfid}_${fcateg}${lang}"
+          pfdset="\$${pfdstr}"
+          eval $pfdstr=\"$pfdset $sfi\"
+          eval use${sfid}=TRUE
+#
+          for langt in f c; do
+            alltree="\$${sfid}_${fcateg}${lang}_${sfi}_tree${langt}"
+            eval alltree="${alltree}"
+            if [ "_$alltree" != "_" ]
+            then
+              pfdstr="ftree${langt}"
+              pfdset=\$$pfdstr
+              eval $pfdstr=\"$pfdset $alltree\"
+              for sfit in $alltree; do
+                sfitd="\$${depcat}dir_${sfit}"
+                eval sfitd="$sfitd"
+                if [ "_$sfitd" = "_" ]
+                then
+                  eval ${depcat}dir_${sfit}=$sfid
+                fi
+              done
+            fi
+          done
+#
+        done
+      done
+    done
+  done
+done
+#
+for fcateg in $sfilecategs; do
+  tmpvarp="${fcateg}directs"
+  tmpvar2="\$$tmpvarp"
+  tmpvar3="\$${fcateg}depdirs"
+  eval $tmpvarp=\"$tmpvar2 $tmpvar3\"
+done
+#
+# Other simulation programs need the same system/os dependent files
+# than the main one.
+#
+if [ "_$nsimprogs" != "_" ]
+then
+  for prog in $nsimprogs; do
+    tmpvarp="maindirects${prog}"
+    tmpvar2="\$$tmpvarp"
+    eval $tmpvarp=\"$tmpvar2 $maindepdirs\"
+  done
+fi
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Completing variables for additional simulation programs.
+# It is assumed that in general the source file strings differ only for
+# a few directories, therefore we are going to copy the respective files
+# for the corresponding  directories every time the corresponding strings
+# were not previously set.
+#
+if [ "_$nsimprogs" != "_" ]
+then
+  for prog in $nsimprogs; do
+     tmpdir="\$maindirects$prog"
+     eval tmpdir=\"$tmpdir\"
+     for edir in $tmpdir; do
+       for lang in f c; do
+         tmpvar="\$${edir}_main${lang}"
+         eval tmpvar=\"$tmpvar\"
+         tmpvarp="${edir}_main${prog}${lang}"
+         varpnow="\$$tmpvarp"
+         eval varpnow=\"$varpnow\"
+         if [ "_$varpnow" = "_" -a "_$tmpvar" != "_" ]
+         then
+           eval $tmpvarp=\"$tmpvar\"
+         fi
+       done
+     done
+  done
+fi
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+# Do not place any "exit" here!
+#
+###############################################################################
+#

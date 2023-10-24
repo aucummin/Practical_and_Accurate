@@ -1,0 +1,6 @@
+
+
+    AIRES distribution doc directory CONTENTS.txt file.
+
+This directory contains the documentation on the AIRES software.
+

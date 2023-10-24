@@ -1,0 +1,31 @@
+
+
+    AIRES distribution main directory CONTENTS.txt file.
+
+This is the main directory of the AIRES distribution. Besides some text
+files containing information we recommend you to read, there are other
+files and directories containing installation scripts, data files, etc.
+The main files/directories are:
+
+    Install.HowTo        Installation instructions
+
+    doinstall            Shell script to automatically install the software.
+
+    config               Configuration file that must be edited before
+                         installation
+
+    config.original      A copy of "config"
+
+    ibin, icfg, data,    Directories containing internal installation
+    skel                 files.
+
+    demos                Directory containing some sample input files.
+
+    doc                  AIRES documentation
+
+    src                  AIRES sources plus third party packages
+                         (SIBYLL, etc.)
+
+Notice that the only customizable file is "config". Leave all the other
+files unchanged for normal installation.
+
